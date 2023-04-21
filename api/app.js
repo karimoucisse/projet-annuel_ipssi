@@ -7,6 +7,6 @@ const PORT = process.env.PORT || 5000
 
 connectToMongodb()
 
-app.use(() => {
-    console.log(`Serveur is running on port ${PORT}`)
+app.listen(PORT, () => {
+    console.log(`Server listening on port http://localhost:${PORT}`)
 })
