@@ -1,5 +1,3 @@
-# Tasks by Cherif
-
 ***
 Cet API blablabla...
 

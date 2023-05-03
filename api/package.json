@@ -1,5 +1,5 @@
 {
-  "name": "tp-node-js-todo-list",
+  "name": "api",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -18,11 +18,11 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.0.2",
-    "nodemon": "^2.0.21"
+    "mongoose": "^7.0.4",
+    "nodemon": "^2.0.22"
   },
   "devDependencies": {
-    "eslint": "^8.36.0",
+    "eslint": "^8.38.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-import": "^2.27.5",
