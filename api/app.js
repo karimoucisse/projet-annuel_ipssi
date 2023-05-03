@@ -1,12 +1,14 @@
-require('dotenv').config()
 const express = require('express')
-const { connectToMongodb } = require('./config/database')
+require('dotenv').config()
+require('./database')
+const cors = require('cors')
+
+const { PORT } = process.env || 3000
 
 const app = express()
-const PORT = process.env.PORT || 5000
 
-connectToMongodb()
+app.use(cors())
 
-app.use(() => {
-    console.log(`Serveur is running on port ${PORT}`)
+app.listen(PORT, () => {
+    console.log(`=> server lauched on port : ${PORT}`)
 })
