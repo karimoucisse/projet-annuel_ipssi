@@ -1,7 +1,14 @@
-const Container = () => {
+import Navigation from "./navigation";
+
+const Container = ({children}) => {
 
   return (
-      <div>Coucou</div>
+      <div>
+        <Navigation />
+        <div>
+          {children}
+        </div>
+      </div>
   );
 };
 
