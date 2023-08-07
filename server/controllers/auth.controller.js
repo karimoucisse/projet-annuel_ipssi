@@ -3,37 +3,58 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 
 const signup = async (req, res) => {
-    if (!('email' in req.body && 'password' in req.body)) {
-        return res
-            .status(422)
-            .json({ message: 'need 2 keys : email, password' });
-    }
-    const regAlphaNum = new RegExp('^[A-Za-z0-9 ]+$');
+    const { email, password, firstname, lastname } = req.body;
 
-    if (
-        req.body.email === '' ||
-        req.body.email === null ||
-        !regAlphaNum.test(req.body.email) ||
-        req.body.password === '' ||
-        req.body.password === null
-    ) {
-        return res.status(422).json({ message: 'Format is not correct' });
+    if (!email) {
+        return res.status(422).json({ message: 'Email is required' });
     }
-    const { email, password } = req.body;
-    const foundUser = await User.findOne({ email });
-    if (foundUser) {
-        return res.status(409).json({ message: 'email already used' });
+
+    if (!password) {
+        return res.status(422).json({ message: 'Password is required' });
     }
-    const saltRounds = 10;
-    const hash = await bcrypt.hash(password, saltRounds);
-    const ans = await User.create({ email, password: hash });
-    res.status(201).json({
-        message: 'user created',
-        user: {
-            id: ans._id,
+
+    if (!firstname) {
+        return res.status(422).json({ message: 'First name is required' });
+    }
+
+    if (!lastname) {
+        return res.status(422).json({ message: 'Last name is required' });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(email)) {
+        return res
+            .status(400)
+            .json({ message: 'Provide a valid email address' });
+    }
+
+    try {
+        const foundUser = await User.findOne({ email });
+        if (foundUser) {
+            return res.status(409).json({ message: 'Email already used' });
+        }
+
+        const saltRounds = 10;
+        const hash = await bcrypt.hash(password, saltRounds);
+        const ans = await User.create({
             email,
-        },
-    });
+            password: hash,
+            firstname,
+            lastname,
+        });
+
+        res.status(201).json({
+            message: 'User created',
+            user: {
+                id: ans._id,
+                email,
+                firstname,
+                lastname,
+            },
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'An error occurred' });
+    }
 };
 
 const login = async (req, res) => {

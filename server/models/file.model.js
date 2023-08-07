@@ -7,7 +7,6 @@ const fileSchema = new Schema(
         userId: {
             type: Schema.Types.ObjectId,
             ref: 'User',
-            required: true,
         },
         name: {
             type: String,
@@ -15,7 +14,6 @@ const fileSchema = new Schema(
         },
         fileSize: {
             type: Schema.Types.Decimal128,
-            required: true,
         },
         fileExtension: {
             type: String,

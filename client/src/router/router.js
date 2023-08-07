@@ -1,14 +1,15 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import NoMatch from './NoMatch';
 import Container from '../layouts/container';
-import Main from '../pages/main';
+import Signin from '../pages/Signin';
+
 
 const Routeur = () => {
   return (
     <BrowserRouter>
       <Container>
         <Routes>
-          <Route path={'/'} element={<Main />} />
+          <Route path={'/'} element={<Signin />} />
           <Route path="*" element={<NoMatch />} />
         </Routes>
       </Container>
