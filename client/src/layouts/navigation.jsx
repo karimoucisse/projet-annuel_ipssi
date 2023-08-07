@@ -1,6 +1,13 @@
-const Navigation = () => {
+import React from 'react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+const Navigation = ({ children }) => {
   return (
-      <div>Ici ma nav</div>
+    <>
+      <Header />
+      {children}
+      <Footer />
+    </>
   );
 };
 

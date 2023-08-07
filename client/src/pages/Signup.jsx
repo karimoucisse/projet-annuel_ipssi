@@ -1,7 +1,36 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
+// @mui
+import {
+  Box,
+  Stack,
+  TextField,
+  Button,
+  Fade,
+  InputAdornment,
+  useTheme,
+  Typography,
+  Checkbox,
+  Link,
+  LinearProgress,
+  CircularProgress,
+  Container,
+} from '@mui/material';
+// formik
+import { Formik, Form, Field } from 'formik';
+// yup
+import * as Yup from 'yup';
+import SignupStep1 from '../components/signup/SignupStep1';
+import SignupStep2 from '../components/signup/SignupStep2';
 
 const Signup = () => {
-  return <div>Signup</div>;
+  const [step, setStep] = useState('step1');
+  const tab = {
+    step1: <SignupStep1 setStep={setStep} />,
+    step2: <SignupStep2 />,
+  };
+  console.log(step);
+
+  return <>{tab[step]}</>;
 };
 
 export default Signup;
