@@ -65,6 +65,7 @@ const login = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
+    // TODO: SUPPRIMER TOUS LES FICHIERS DE L'UTILISATEUR
     await User.findByIdAndDelete(req.params.userId);
     return res.status(202).json({ message: 'User deleted !' });
 };
