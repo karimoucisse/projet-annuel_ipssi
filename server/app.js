@@ -1,6 +1,8 @@
 const express = require('express');
 require('dotenv').config();
 require('./database');
+const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
 const cors = require('cors');
 const authRouter = require('./router/auth.router');
 const fileRouter = require('./router/file.router');
@@ -11,6 +13,8 @@ const { PORT } = process.env || 3000;
 const app = express();
 
 app.use(cors());
+app.use(bodyParser.json());
+app.use(methodOverride('_method')); // TODO: Supprimer cette ligne et le package, inutile lorsque l'on fera des requêtes avec axios via react
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

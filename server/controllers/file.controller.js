@@ -10,5 +10,17 @@ const deleteFile = async (req, res) => {
     return res.status(202).json({ message: 'File removed' });
 };
 
+const createFile = async (req, res) => {
+    res.json({ file: req.file });
+    await File.create({
+        userId: '641da2ea18c64178b07ee515', // req.params.userId,
+        fileId: req.file.id,
+        name: req.file.originalname,
+        fileSize: req.file.size,
+        fileExtension: req.file.contentType,
+    });
+};
+
 module.exports.getFiles = getFiles;
 module.exports.deleteFile = deleteFile;
+module.exports.createFile = createFile;

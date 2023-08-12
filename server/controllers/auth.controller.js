@@ -8,12 +8,12 @@ const signup = async (req, res) => {
             .status(422)
             .json({ message: 'need 2 keys : email, password' });
     }
-    const regAlphaNum = new RegExp('^[A-Za-z0-9 ]+$');
+    // const regAlphaNum = new RegExp('^[A-Za-z0-9 ]+$');
 
     if (
         req.body.email === '' ||
         req.body.email === null ||
-        !regAlphaNum.test(req.body.email) ||
+    //    !regAlphaNum.test(req.body.email) ||
         req.body.password === '' ||
         req.body.password === null
     ) {

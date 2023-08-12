@@ -9,6 +9,11 @@ const fileSchema = new Schema(
             ref: 'User',
             required: true,
         },
+        fileId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Uploads',
+            required: true,
+        },
         name: {
             type: String,
             required: true,
