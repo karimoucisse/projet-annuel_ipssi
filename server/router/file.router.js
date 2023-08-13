@@ -118,7 +118,7 @@ router.get(
 
 // MON FILE ID === 64d7979bf635fa13ffbe32ec
 
-router.get('/stream/:filename', async (req, res) => {
+router.get('/stream/:filename', async (req, res) => { // TODO: Faille de sécurité, on ne vérifie pas si le fichier provient bien de cet utilisateur connecté, dans tous les cas, il faut une autorisation pour afficher le fichier
     const file = await gfs.files.findOne({ filename: req.params.filename });
     if (!file || file.length === 0) {
         return res.status(404).json({
