@@ -4,6 +4,7 @@ import Container from '../layouts/container';
 import Main from '../pages/main';
 import AuthRouter from '../pages/auth/authRouter';
 import AuthGuard from '../_helpers/authGuard';
+import UserList from '../pages/admin/userList';
 
 const Routeur = () => {
   return (
@@ -13,7 +14,7 @@ const Routeur = () => {
           <Route path={"/"} element={<Main />} />
           <Route path="/admin/*" element={
             <AuthGuard>
-              
+              <UserList />
             </AuthGuard>
           } />
           <Route path="/auth/*" element={<AuthRouter />} />

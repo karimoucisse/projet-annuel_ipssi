@@ -70,6 +70,18 @@ const deleteUser = async (req, res) => {
     return res.status(202).json({ message: 'User deleted !' });
 };
 
+const getUsers = async (req, res) => {
+    const users = await User.find();
+    return res.status(200).json(users);
+};
+
+const getUserById = async (req, res) => {
+    const user = await User.findOne({ _id: req.params.userId });
+    return res.status(200).json(user);
+};
+
 module.exports.signup = signup;
 module.exports.login = login;
 module.exports.deleteUser = deleteUser;
+module.exports.getUsers = getUsers;
+module.exports.getUserById = getUserById;
