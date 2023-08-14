@@ -10,8 +10,7 @@ const fileSchema = new Schema(
             required: true,
         },
         fileId: {
-            type: Schema.Types.ObjectId,
-            ref: 'Uploads',
+            type: String,
             required: true,
         },
         name: {

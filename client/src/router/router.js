@@ -5,13 +5,23 @@ import Main from '../pages/main';
 import AuthRouter from '../pages/auth/authRouter';
 import AuthGuard from '../_helpers/authGuard';
 import UserList from '../pages/admin/userList';
+import Details from '../pages/details';
 
 const Routeur = () => {
   return (
     <BrowserRouter>
       <Container>
         <Routes>
-          <Route path={"/"} element={<Main />} />
+          <Route path={"/"} element={
+          <AuthGuard>
+            <Main />
+          </AuthGuard>
+          } />
+          <Route path={"/details/:fileId"} element={
+            <AuthGuard>
+              <Details />
+            </AuthGuard>
+          } />
           <Route path="/admin/*" element={
             <AuthGuard>
               <UserList />

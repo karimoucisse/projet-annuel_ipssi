@@ -55,13 +55,13 @@ const upload = multer({ storage });
 //    }
 // );
 
-// router.get('/:userId', authorization, async (req, res, next) => {
-//    try {
-//        await fileController.getFiles(req, res, next);
-//    } catch (error) {
-//        next(error);
-//    }
-// });
+router.get('/files', authorization, async (req, res, next) => {
+    try {
+        await fileController.getFiles(req, res, next);
+    } catch (error) {
+        next(error);
+    }
+});
 
 // router.delete(
 //    '/:fileId',
@@ -78,7 +78,7 @@ const upload = multer({ storage });
 
 router.post(
     '/upload',
-//    authorization,
+    authorization,
     upload.single('file'),
     async (req, res, next) => {
         try {
@@ -105,7 +105,7 @@ router.get('/files', (req, res) => {
 
 router.get(
     '/files/:fileId',
-    // authorization,
+    authorization,
     isFileInDatabase,
     async (req, res, next) => {
         try {
@@ -115,8 +115,6 @@ router.get(
         }
     }
 );
-
-// MON FILE ID === 64d7979bf635fa13ffbe32ec
 
 router.get('/stream/:filename', async (req, res) => { // TODO: Faille de sécurité, on ne vérifie pas si le fichier provient bien de cet utilisateur connecté, dans tous les cas, il faut une autorisation pour afficher le fichier
     const file = await gfs.files.findOne({ filename: req.params.filename });
@@ -137,14 +135,26 @@ router.get('/stream/:filename', async (req, res) => { // TODO: Faille de sécuri
     }
 });
 
-router.delete('/files/:id', (req, res) => {
-    gfs.remove({ _id: req.params.id, root: 'uploads' }, (err, gridStore) => {
-        if (err) {
-            return res.status(404).json({ err });
+router.delete(
+    '/files/:id',
+    authorization,
+    isFileInDatabase,
+    async (req, res, next) => {
+        // Ajouter sécurité
+        gfs.remove(
+            { filename: req.file.fileid, root: 'uploads' },
+            (err, gridStore) => {
+                if (err) {
+                    return res.status(404).json({ err });
+                }
+            }
+        );
+        try {
+            await fileController.deleteFile(req, res, next);
+        } catch (error) {
+            next(error);
         }
-
-        res.redirect('/');
-    });
-});
+    }
+);
 
 module.exports = router;
