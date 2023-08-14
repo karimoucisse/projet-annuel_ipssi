@@ -4,6 +4,10 @@ let login = (credentials) => {
     return Axios.post('/auth/login', credentials);
 }
 
+let signup = (userInfo) => {
+    return Axios.post('/stripe/create-checkout-session', userInfo);
+}
+
 let saveToken = (token) => {
     localStorage.setItem('token', token);
 }
@@ -22,5 +26,5 @@ let getToken = () => {
 }
 
 export const accountService = {
-    login, saveToken, logout, isLogged, getToken
+    login, saveToken, logout, isLogged, getToken, signup
 }

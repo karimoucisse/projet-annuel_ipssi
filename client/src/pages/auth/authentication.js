@@ -26,7 +26,7 @@ const Authentication = () => {
                 accountService.saveToken(res.data.token);
                 navigate('/');
             })
-            .catch(error => console.log(error));
+            .catch(err => console.log(err));
     }
 
     return (

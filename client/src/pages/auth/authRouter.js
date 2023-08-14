@@ -2,12 +2,14 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Authentication from './authentication';
 import NoMatch from '../../router/NoMatch';
+import Subscription from './subscription';
 
 const AuthRouter = () => {
     return (
         <Routes>
             <Route index element={<Authentication />} />
             <Route path="login" element={<Authentication />}/>
+            <Route path="signup" element={<Subscription />}/>
             <Route path="*" element={<NoMatch />}/>
         </Routes>
     );

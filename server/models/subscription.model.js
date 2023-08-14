@@ -4,12 +4,11 @@ const { Schema } = mongoose;
 
 const subscriptionSchema = new Schema(
     {
-        userId: {
-            type: Schema.Types.ObjectId,
-            ref: 'User',
+        storage: {
+            type: Number,
             required: true,
         },
-        storage: {
+        price: {
             type: Number,
             required: true,
         },

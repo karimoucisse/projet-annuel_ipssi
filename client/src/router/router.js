@@ -6,6 +6,8 @@ import AuthRouter from '../pages/auth/authRouter';
 import AuthGuard from '../_helpers/authGuard';
 import UserList from '../pages/admin/userList';
 import Details from '../pages/details';
+import CheckoutSuccess from '../pages/stripe/checkoutSuccess';
+import CheckoutFailed from '../pages/stripe/checkoutFailed';
 
 const Routeur = () => {
   return (
@@ -27,6 +29,8 @@ const Routeur = () => {
               <UserList />
             </AuthGuard>
           } />
+          <Route path="/checkout-success" element={<CheckoutSuccess />} />
+          <Route path="/checkout-failed" element={<CheckoutFailed />} />
           <Route path="/auth/*" element={<AuthRouter />} />
           <Route path="*" element={<NoMatch />} />
         </Routes>

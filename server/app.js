@@ -7,6 +7,7 @@ const cors = require('cors');
 const authRouter = require('./router/auth.router');
 const fileRouter = require('./router/file.router');
 const adminRouter = require('./router/admin.router');
+const stripeService = require('./router/stripe');
 
 const { PORT } = process.env || 3000;
 
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/auth', authRouter);
 app.use('/file', fileRouter);
 app.use('/admin', adminRouter);
+app.use('/stripe', stripeService);
 
 app.use((err, req, res, next) => {
     res.status(500).json({ status: 'error', message: err });
