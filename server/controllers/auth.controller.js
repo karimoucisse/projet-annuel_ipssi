@@ -1,8 +1,10 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
+const Address = require('../models/address.model');
 
 const signup = async (req, res) => {
+    // TODO: AJOUTER DE LA SECURITE
     if (!('email' in req.body && 'password' in req.body)) {
         return res
             .status(422)
@@ -13,20 +15,52 @@ const signup = async (req, res) => {
     if (
         req.body.email === '' ||
         req.body.email === null ||
-    //    !regAlphaNum.test(req.body.email) ||
+        //    !regAlphaNum.test(req.body.email) ||
         req.body.password === '' ||
         req.body.password === null
     ) {
         return res.status(422).json({ message: 'Format is not correct' });
     }
-    const { email, password } = req.body;
+    console.log(req.body);
+    const {
+        email,
+        password,
+        firstname,
+        lastname,
+        phone,
+        wayType,
+        number,
+        addressName,
+        postalCode,
+        state,
+        city,
+        country,
+    } = req.body;
     const foundUser = await User.findOne({ email });
     if (foundUser) {
         return res.status(409).json({ message: 'email already used' });
     }
     const saltRounds = 10;
     const hash = await bcrypt.hash(password, saltRounds);
-    const ans = await User.create({ email, password: hash });
+    const ans = await User.create({
+        email,
+        password: hash,
+        firstname,
+        lastname,
+        phone,
+    });
+
+    await Address.create({
+        userId: ans._id,
+        wayType,
+        number,
+        addressName,
+        postalCode,
+        state,
+        city,
+        country,
+    });
+
     res.status(201).json({
         message: 'user created',
         user: {

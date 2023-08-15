@@ -5,7 +5,23 @@ let login = (credentials) => {
 }
 
 let signup = (userInfo) => {
-    return Axios.post('/stripe/create-checkout-session', userInfo);
+    return Axios.post('/auth/signup', userInfo);
+}
+
+let payment = (data) => {
+    return Axios.post('/stripe/create-checkout-session', data);
+}
+
+let otherPayment = (data) => {
+    return Axios.post('/stripe/create-payment-intent', data);
+}
+
+let saveUserId = (userId) => {
+    localStorage.setItem('userId', userId);
+}
+
+let getUserId = () => {
+    return localStorage.getItem('userId');
 }
 
 let saveToken = (token) => {
@@ -26,5 +42,5 @@ let getToken = () => {
 }
 
 export const accountService = {
-    login, saveToken, logout, isLogged, getToken, signup
+    login, saveToken, logout, isLogged, getToken, signup, payment, saveUserId, getUserId, otherPayment
 }

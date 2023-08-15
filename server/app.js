@@ -14,6 +14,7 @@ const { PORT } = process.env || 3000;
 const app = express();
 
 app.use(cors());
+
 app.use(bodyParser.json());
 app.use(methodOverride('_method')); // TODO: Supprimer cette ligne et le package, inutile lorsque l'on fera des requêtes avec axios via react
 

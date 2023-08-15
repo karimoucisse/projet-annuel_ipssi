@@ -25,7 +25,8 @@ router.delete('/:userId', async (req, res, next) => {
     }
 });
 
-router.get('/users', async (req, res, next) => { // TODO: ADD MIDDLEWARES (authorization et admin)
+router.get('/users', async (req, res, next) => {
+    // TODO: ADD MIDDLEWARES (authorization et admin)
     try {
         await authController.getUsers(req, res, next);
     } catch (error) {
@@ -33,12 +34,13 @@ router.get('/users', async (req, res, next) => { // TODO: ADD MIDDLEWARES (autho
     }
 });
 
-router.get('users/:userId', async (req, res, next) => { // TODO: ADD MIDDLEWARES (authorization et admin)
+router.get('users/:userId', async (req, res, next) => {
+    // TODO: ADD MIDDLEWARES (authorization et admin)
     try {
         await authController.getUserById(req, res, next);
     } catch (error) {
         next(error);
     }
-})
+});
 
 module.exports = router;

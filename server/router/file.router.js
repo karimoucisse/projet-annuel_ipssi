@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const Grid = require('gridfs-stream');
 const crypto = require('crypto');
-const path = require('path')
+const path = require('path');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const authorization = require('../middlewares/authorization.mid');
 const isFileInDatabase = require('../middlewares/isFileInDatabase.mid');
@@ -116,7 +116,8 @@ router.get(
     }
 );
 
-router.get('/stream/:filename', async (req, res) => { // TODO: Faille de sécurité, on ne vérifie pas si le fichier provient bien de cet utilisateur connecté, dans tous les cas, il faut une autorisation pour afficher le fichier
+router.get('/stream/:filename', async (req, res) => {
+    // TODO: Faille de sécurité, on ne vérifie pas si le fichier provient bien de cet utilisateur connecté, dans tous les cas, il faut une autorisation pour afficher le fichier
     const file = await gfs.files.findOne({ filename: req.params.filename });
     if (!file || file.length === 0) {
         return res.status(404).json({
