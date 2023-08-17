@@ -1,4 +1,5 @@
 const express = require('express');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); // TODO: REMOVE THAT
 require('dotenv').config();
 require('./database');
 const bodyParser = require('body-parser');
@@ -8,12 +9,72 @@ const authRouter = require('./router/auth.router');
 const fileRouter = require('./router/file.router');
 const adminRouter = require('./router/admin.router');
 const stripeService = require('./router/stripe');
+const Invoice = require('./models/invoice.model');
+const Subscription = require('./models/subscription.model');
 
 const { PORT } = process.env || 3000;
 
 const app = express();
+const corsOptions = {
+    origin: 'http://localhost:5000',
+    credentials: true,
+};
+app.use(cors(corsOptions));
 
-app.use(cors());
+app.post(
+    '/stripe/webhook',
+    express.raw({ type: 'application/json' }),
+    async (req, response) => {
+        let event = req.body;
+
+        const endpointSecret =
+            'whsec_b0a758ff8ad0797930c7bbf2a13ad008b6a374dd182d9018c9dea64246c831af';
+        if (endpointSecret) {
+            const sig = req.headers['stripe-signature'];
+            try {
+                event = stripe.webhooks.constructEvent(
+                    req.body,
+                    sig,
+                    endpointSecret
+                );
+            } catch (err) {
+                console.log(err.message);
+                response.status(400).send(`Webhook Error: ${err.message}`);
+                return;
+            }
+        }
+
+        const { userId, subscription } = event.data.object.metadata;
+
+        switch (event.type) {
+            //case 'payment_intent.payment_failed':
+
+            //    break;
+            case 'payment_intent.succeeded':
+                if (userId && subscription) {
+                    await Subscription.create({
+                        userId,
+                        storage: Number(subscription),
+                        price: Number(subscription) * 2000,
+                    });
+
+                    await Invoice.create({
+                        userId,
+                        quantity: Number(subscription),
+                    });
+                } else {
+                    console.error('il y a un problème'); // TODO: Renvoyer message d'erreur
+                }
+
+                break;
+            // ... handle other event types
+            default:
+              console.log(`Unhandled event type ${event.type}`);
+        }
+        // Return a 200 response to acknowledge receipt of the event
+        response.send();
+    }
+);
 
 app.use(bodyParser.json());
 app.use(methodOverride('_method')); // TODO: Supprimer cette ligne et le package, inutile lorsque l'on fera des requêtes avec axios via react

@@ -5,7 +5,6 @@ const Subscription = require('../models/subscription.model');
 require('dotenv').config();
 
 router.post('/create-checkout-session', async (req, res) => {
-    console.log(req.body);
     const { subscription, userId } = req.body;
     const session = await stripe.checkout.sessions.create({
         line_items: [
@@ -23,18 +22,28 @@ router.post('/create-checkout-session', async (req, res) => {
         mode: 'payment',
         success_url: `${process.env.CLIENT_URL}/checkout-success`,
         cancel_url: `${process.env.CLIENT_URL}/checkout-failed`,
+        metadata: {
+            userId,
+            subscription,
+        },
+        payment_intent_data: {
+            metadata: {
+                userId,
+                subscription,
+            },
+        },
     });
 
-    await Subscription.create({
-        userId,
-        storage: Number(subscription),
-        price: Number(subscription) * 2000,
-    });
+    //await Subscription.create({
+    //    userId,
+    //    storage: Number(subscription),
+    //    price: Number(subscription) * 2000,
+    //});
 
-    await Invoice.create({
-        userId,
-        quantity: Number(subscription),
-    });
+    //await Invoice.create({
+    //    userId,
+    //    quantity: Number(subscription),
+    //});
 
     res.send({ url: session.url });
 });
@@ -65,6 +74,6 @@ router.post('/create-checkout-session', async (req, res) => {
         // Return a 200 response to acknowledge receipt of the event
 //        response.send();
 //    }
-// );
+//);
 
 module.exports = router;

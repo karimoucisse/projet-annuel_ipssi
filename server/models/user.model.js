@@ -33,6 +33,11 @@ const userSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Subcription',
         },
+        active: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
     },
     { timestamps: true }
 );

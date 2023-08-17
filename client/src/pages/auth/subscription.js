@@ -44,7 +44,7 @@ const Subscription = () => {
                 })
                 .catch(err => console.log(err));
         } else {
-            accountService.payment({ subscription: userInfo.subscription, userId: accountService.getUserId() })
+            accountService.payment({ subscription: userInfo.subscription, userId: accountService.getUserId() }) // TODO: SUPPRIMER LES PARAMETRES, ILS SONT PASSES DANS LA SESSION COTE SERVEUR
                 .then(res => {
                     console.log(res);
                     if(res.data.url){

@@ -21,7 +21,6 @@ const signup = async (req, res) => {
     ) {
         return res.status(422).json({ message: 'Format is not correct' });
     }
-    console.log(req.body);
     const {
         email,
         password,
