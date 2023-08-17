@@ -1,23 +1,27 @@
 import Axios from "./caller.service";
 
 let login = (credentials) => {
-    return Axios.post('/auth/login', credentials, {withCredentials: true});
+    return Axios.post('/auth/login', credentials);
 }
 
 let signup = (userInfo) => {
-    return Axios.post('/auth/signup', userInfo, {withCredentials: true});
+    return Axios.post('/auth/signup', userInfo);
 }
 
 let payment = (data) => {
-    return Axios.post('/stripe/create-checkout-session', data, {withCredentials: true});
+    return Axios.post('/stripe/create-checkout-session', data);
 }
 
 let otherPayment = (data) => {
-    return Axios.post('/stripe/create-payment-intent', data, {withCredentials: true});
+    return Axios.post('/stripe/create-payment-intent', data);
+}
+
+let deleteUserId = () => {
+    localStorage.removeItem('userId');
 }
 
 let saveUserId = (userId) => {
-    localStorage.setItem('userId', userId, {withCredentials: true});
+    localStorage.setItem('userId', userId);
 }
 
 let getUserId = () => {
@@ -25,7 +29,7 @@ let getUserId = () => {
 }
 
 let saveToken = (token) => {
-    localStorage.setItem('token', token, {withCredentials: true});
+    localStorage.setItem('token', token);
 }
 
 let logout = () => {
@@ -41,6 +45,21 @@ let getToken = () => {
     return localStorage.getItem('token');
 }
 
+let getBasket = (userId) => {
+    return Axios.get('/basket/'+userId);
+} 
+
 export const accountService = {
-    login, saveToken, logout, isLogged, getToken, signup, payment, saveUserId, getUserId, otherPayment
+    login, 
+    saveToken, 
+    logout, 
+    isLogged, 
+    getToken, 
+    signup, 
+    payment, 
+    saveUserId, 
+    getUserId, 
+    otherPayment, 
+    getBasket,
+    deleteUserId
 }

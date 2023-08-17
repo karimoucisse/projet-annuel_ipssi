@@ -22,6 +22,9 @@ const Subscription = () => {
     });
 
     const [userIsValidate, setUserIsValidate] = useState(false);
+    const [addressIsValidate, setAddressIsValidate] = useState(false);
+    const [subscriptionIsValidate, setSubscriptionIsValidate] = useState(false);
+    const [counter, setCounter] = useState(0);
 
     const onChange = (e) => {
         setUserInfo({
@@ -30,21 +33,29 @@ const Subscription = () => {
         })
     }
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
         console.log(userInfo);
-        if(!userIsValidate){
-            accountService.signup(userInfo)
+        if(userIsValidate && addressIsValidate && subscriptionIsValidate){
+            await accountService.signup(userInfo) // On inscrit l'utilisateur
                 .then(res => {
                     console.log(res);
                     if(res.data.message === 'user created' && res.data.user.id){
-                        setUserIsValidate(true);
+                        accountService.deleteUserId();
                         accountService.saveUserId(res.data.user.id);
                     }
                 })
                 .catch(err => console.log(err));
-        } else {
-            accountService.payment({ subscription: userInfo.subscription, userId: accountService.getUserId() }) // TODO: SUPPRIMER LES PARAMETRES, ILS SONT PASSES DANS LA SESSION COTE SERVEUR
+
+            //accountService.getBasket({ userId: accountService.getUserId() }) // TODO: Si l'utilisateur n'a pas validé son paiement et qu'il souhaite finaliser son inscription on revient chercher son panier 
+            //    .then(res => {
+            //        console.log(res.data);
+            //        setBasketContent(res.data);
+            //        setBasketIsValidate(true);
+            //    })
+            //    .catch(err => console.log(err));
+
+            await accountService.payment({ subscription: userInfo.subscription, userId: accountService.getUserId() }) // L'utilisateur passe au paiement
                 .then(res => {
                     console.log(res);
                     if(res.data.url){
@@ -53,108 +64,207 @@ const Subscription = () => {
                 })
                 .catch(err => console.log(err));
         }
-
+        if(userIsValidate && addressIsValidate && !subscriptionIsValidate){
+            // TODO: Vérifier que la valeur subscription a bien changé
+            setSubscriptionIsValidate(true);
+            increaseCounter();
+        }
+        if(userIsValidate && !addressIsValidate){
+            // TODO: VERIFIER TOUS LES CHAMPS
+            setAddressIsValidate(true);
+            increaseCounter();
+        }
+        if(!userIsValidate){
+            //TODO: VERIFIER TOUS LES CHAMPS DES INPUTS
+            setUserIsValidate(true);
+            increaseCounter();
+        }
     }
 
-    if(!userIsValidate){
-        return (
-            <form onSubmit={onSubmit}>
-                <h3>Les informations personnelles</h3>
+    const increaseCounter = () => {
+        if(counter >= 3){
+            setCounter(3)
+        } else {
+            setCounter(counter + 1);
+        }
+    }
 
-                <div className="group">
-                    <label htmlFor="firstname">Prenom</label>
-                    <input type="text" name="firstname" value={userInfo.firstname} onChange={onChange} />
-                </div>
+    const decreaseCounter = () => {
+        if(counter > 0){
+            setCounter(counter - 1)
+            console.log(counter);
+            if(counter === 3){
+                setSubscriptionIsValidate(false);
+            }
+            if(counter === 2){
+                setAddressIsValidate(false);
+            }
+            if(counter === 1){
+                setUserIsValidate(false)
+            }
+        } else {
+            setCounter(0);
+        }
+    }
 
-                <div className="group">
-                    <label htmlFor="lastname">Nom</label>
-                    <input type="text" name="lastname" value={userInfo.lastname} onChange={onChange}/>
-                </div>
+    const userInfoForm = (
+                <form onSubmit={onSubmit}>
+                    <h3>Les informations personnelles</h3>
 
-                <div className="group">
-                    <label htmlFor="phone">Téléphone</label>
-                    <input type="text" name="phone" value={userInfo.phone} onChange={onChange} />
-                </div>
+                    <div className="group">
+                        <label htmlFor="firstname">Prenom</label>
+                        <input type="text" name="firstname" value={userInfo.firstname} onChange={onChange} />
+                    </div>
 
-                <div className="group">
-                    <label htmlFor="email">Email</label>
-                    <input type="text" name="email" value={userInfo.email} onChange={onChange} />
-                </div>
+                    <div className="group">
+                        <label htmlFor="lastname">Nom</label>
+                        <input type="text" name="lastname" value={userInfo.lastname} onChange={onChange}/>
+                    </div>
 
-                <div className="group">
-                    <label htmlFor="password">Password</label>
-                    <input type="text" name="password" value={userInfo.password} onChange={onChange} />
-                </div>
+                    <div className="group">
+                        <label htmlFor="phone">Téléphone</label>
+                        <input type="text" name="phone" value={userInfo.phone} onChange={onChange} />
+                    </div>
 
-                <h3>L'adresse</h3>
+                    <div className="group">
+                        <label htmlFor="email">Email</label>
+                        <input type="text" name="email" value={userInfo.email} onChange={onChange} />
+                    </div>
 
-                <div className="group">
-                    <label htmlFor="wayType">Type de voie</label>
-                    <select name="wayType" onChange={onChange} >
-                        <option value="">Selectionner un type de voie</option>
-                        <option value="1">Rue</option>
-                        <option value="2">Avenue</option>
-                        <option value="3">Boulevard</option>
-                    </select>
-                </div>
+                    <div className="group">
+                        <label htmlFor="password">Password</label>
+                        <input type="text" name="password" value={userInfo.password} onChange={onChange} />
+                    </div>
 
-                <div className="group">
-                    <label htmlFor="number">Numéro du batiment</label>
-                    <input type="text" name="number" value={userInfo.number} onChange={onChange} />
-                </div>
-
-                <div className="group">
-                    <label htmlFor="addressName">Adresse</label>
-                    <input type="text" name="addressName" value={userInfo.addressName} onChange={onChange} />
-                </div>
-
-                <div className="group">
-                    <label htmlFor="postalCode">Code postal</label>
-                    <input type="text" name="postalCode" value={userInfo.postalCode} onChange={onChange} />
-                </div>
-
-                <div className="group">
-                    <label htmlFor="city">Ville</label>
-                    <input type="text" name="city" value={userInfo.city} onChange={onChange} />
-                </div>
-
-                <div className="group">
-                    <label htmlFor="state">Etat / Region</label>
-                    <input type="text" name="state" value={userInfo.state} onChange={onChange} />
-                </div>
-
-                <div className="group">
-                    <label htmlFor="country">Pays</label>
-                    <input type="text" name="country" value={userInfo.country} onChange={onChange} />
-                </div>
-
-                <div className="group">
-                    <button>Continuer</button>    
-                </div>
-            </form>
+                    <div className="group">
+                        <button>Continuer</button>    
+                    </div>
+                </form>
         );
-    }
 
-    return (
+    const addressInfoForm = (
+                <form onSubmit={onSubmit}>
+                    <h3>L'adresse</h3>
+
+                    <div className="group">
+                        <label htmlFor="wayType">Type de voie</label>
+                        <select name="wayType" onChange={onChange} >
+                            <option value="">Selectionner un type de voie</option>
+                            <option value="1">Rue</option>
+                            <option value="2">Avenue</option>
+                            <option value="3">Boulevard</option>
+                        </select>
+                    </div>
+
+                    <div className="group">
+                        <label htmlFor="number">Numéro du batiment</label>
+                        <input type="text" name="number" value={userInfo.number} onChange={onChange} />
+                    </div>
+
+                    <div className="group">
+                        <label htmlFor="addressName">Adresse</label>
+                        <input type="text" name="addressName" value={userInfo.addressName} onChange={onChange} />
+                    </div>
+
+                    <div className="group">
+                        <label htmlFor="postalCode">Code postal</label>
+                        <input type="text" name="postalCode" value={userInfo.postalCode} onChange={onChange} />
+                    </div>
+
+                    <div className="group">
+                        <label htmlFor="city">Ville</label>
+                        <input type="text" name="city" value={userInfo.city} onChange={onChange} />
+                    </div>
+
+                    <div className="group">
+                        <label htmlFor="state">Etat / Region</label>
+                        <input type="text" name="state" value={userInfo.state} onChange={onChange} />
+                    </div>
+
+                    <div className="group">
+                        <label htmlFor="country">Pays</label>
+                        <input type="text" name="country" value={userInfo.country} onChange={onChange} />
+                    </div>  
+
+                    <div className="group">
+                        <button>Continuer</button>    
+                    </div>
+                </form>
+        )
+
+    const subscriptionInfoForm = (
+                <form onSubmit={onSubmit}>
+                    <h3>Type d'abonnement</h3>
+
+                    <div className="group">
+                        <label>Abonnement à 20€
+                        <input type="radio" name="subscription" value="1" onChange={onChange} />
+                        </label>
+                        <label>Abonnement à 40€
+                        <input type="radio" name="subscription" value="2" onChange={onChange} />
+                        </label>
+                        <label>Abonnement à 60€
+                        <input type="radio" name="subscription" value="3" onChange={onChange} />
+                        </label>
+                    </div>
+
+                    <div className="group">
+                        <button>Continuer</button>    
+                    </div>
+
+                </form>
+    );
+
+    const result = (
+        <div>
+        <h3>Résumé</h3>
+        
+        <div>
+            <h4>Mes infos personnelles</h4>
+            <ul>
+                <li>{userInfo.firstname}</li>
+                <li>{userInfo.lastname}</li>
+                <li>{userInfo.email}</li>
+                <li>{userInfo.phone}</li>
+            </ul>
+        </div>
+
+        <div>
+            <h4>Mon adresse</h4>
+            <ul>
+                <li>{userInfo.wayType}</li>
+                <li>{userInfo.addressName}</li>
+                <li>{userInfo.postalCode}</li>
+                <li>{userInfo.state}</li>
+                <li>{userInfo.city}</li>
+                <li>{userInfo.country}</li>
+            </ul>
+        </div>
+
+        <div>
+            <h4>Mon abonnement</h4>
+            <ul>
+                <li>Abonnement type {userInfo.subscription}</li>
+                <li>Prix: {Number(userInfo.subscription)*20}€</li>
+            </ul>
+        </div>
+
         <form onSubmit={onSubmit}>
-            <h3>Type d'abonnement</h3>
-
-            <div className="group">
-                <label>Abonnement à 20€
-                <input type="radio" name="subscription" value="1" onChange={onChange} />
-                </label>
-                <label>Abonnement à 40€
-                <input type="radio" name="subscription" value="2" onChange={onChange} />
-                </label>
-                <label>Abonnement à 60€
-                <input type="radio" name="subscription" value="3" onChange={onChange} />
-                </label>
-            </div>
-
-            <div className="group">
-                <button>S'inscrire</button>    
-            </div>
+                    <div className="group">
+                        <button>Passer au paiement</button>    
+                    </div>
         </form>
+        </div>
+    )
+
+    const tab_view_form = [userInfoForm, addressInfoForm, subscriptionInfoForm, result]
+    
+    //TODO: RETIRER BOUTON RETOUR LORSQUE NOUS SOMMES A ZERO
+    return (
+        <div>
+            <button onClick={decreaseCounter}>Retour</button> 
+            {tab_view_form[counter]}
+        </div>
     );
 }
 

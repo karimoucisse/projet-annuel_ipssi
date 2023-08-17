@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const Address = require('../models/address.model');
+const Subscription = require('../models/subscription.model');
+const Basket = require('../models/basket.model');
 
 const signup = async (req, res) => {
     // TODO: AJOUTER DE LA SECURITE
@@ -34,6 +36,7 @@ const signup = async (req, res) => {
         state,
         city,
         country,
+        subscription,
     } = req.body;
     const foundUser = await User.findOne({ email });
     if (foundUser) {
@@ -58,6 +61,17 @@ const signup = async (req, res) => {
         state,
         city,
         country,
+    });
+
+    const ansSubscription = await Subscription.create({
+        userId: ans._id,
+        storage: Number(subscription),
+        price: Number(subscription) * 2000,
+    });
+
+    await Basket.create({
+        userId: ans._id,
+        subscriptionId: ansSubscription._id,
     });
 
     res.status(201).json({

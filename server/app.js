@@ -11,6 +11,8 @@ const adminRouter = require('./router/admin.router');
 const stripeService = require('./router/stripe');
 const Invoice = require('./models/invoice.model');
 const Subscription = require('./models/subscription.model');
+const User = require('./models/user.model');
+const Basket = require('./models/basket.model');
 
 const { PORT } = process.env || 3000;
 
@@ -52,12 +54,8 @@ app.post(
             //    break;
             case 'payment_intent.succeeded':
                 if (userId && subscription) {
-                    await Subscription.create({
-                        userId,
-                        storage: Number(subscription),
-                        price: Number(subscription) * 2000,
-                    });
-
+                    await User.findByIdAndUpdate(userId, { active: true });
+                    await Basket.findOneAndDelete({ userId });
                     await Invoice.create({
                         userId,
                         quantity: Number(subscription),
