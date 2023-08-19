@@ -53,7 +53,7 @@ let getToken = () => {
 
 let getBasket = (userId) => {
     return Axios.get('/basket/'+userId);
-} 
+}
 
 export const accountService = {
     login, 

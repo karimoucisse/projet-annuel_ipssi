@@ -12,6 +12,10 @@ let getUserInfoById = (userId) => {
     return Axios.get('/auth/userinfo/'+userId);
 }
 
+let deleteUser = () => {
+    return Axios.delete('/auth/');
+}
+
 export const userService = {
-    getAllUsers, getUser, getUserInfoById
+    getAllUsers, getUser, getUserInfoById, deleteUser
 }

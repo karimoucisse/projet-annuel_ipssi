@@ -142,7 +142,7 @@ router.delete(
     isFileInDatabase,
     async (req, res, next) => {
         // Ajouter sécurité
-        gfs.remove(
+        await gfs.remove(
             { filename: req.file.fileid, root: 'uploads' },
             (err, gridStore) => {
                 if (err) {

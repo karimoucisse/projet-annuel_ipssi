@@ -4,6 +4,7 @@ const User = require('../models/user.model');
 const Address = require('../models/address.model');
 const Subscription = require('../models/subscription.model');
 const Basket = require('../models/basket.model');
+const File = require('../models/file.model');
 
 const signup = async (req, res) => {
     // TODO: AJOUTER DE LA SECURITE
@@ -147,7 +148,17 @@ const login = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     // TODO: SUPPRIMER TOUS LES FICHIERS DE L'UTILISATEUR
-    await User.findByIdAndDelete(req.params.userId);
+    // TODO: VOIR COMMENT TOUT SUPPRIMER
+    await Address.findOneAndDelete();
+    await Basket.findOneAndDelete();
+    await Subscription.deleteMany();
+    const filesDeleted = await File.deleteMany();
+
+    const user = await User.findByIdAndDelete(req.user.userId);
+    // TODO: ENVOYER UN MAIL A L'UTILISATEUR
+    
+    // TODO: ENVOYER UN MAIL A L'ADMIN
+    
     return res.status(202).json({ message: 'User deleted !' });
 };
 
