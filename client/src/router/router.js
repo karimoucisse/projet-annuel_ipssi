@@ -8,6 +8,7 @@ import UserList from '../pages/admin/userList';
 import Details from '../pages/details';
 import CheckoutSuccess from '../pages/stripe/checkoutSuccess';
 import CheckoutFailed from '../pages/stripe/checkoutFailed';
+import VisitorGuard from '../_helpers/visitorGuard';
 
 const Routeur = () => {
   return (
@@ -31,7 +32,11 @@ const Routeur = () => {
           } />
           <Route path="/checkout-success" element={<CheckoutSuccess />} />
           <Route path="/checkout-failed" element={<CheckoutFailed />} />
-          <Route path="/auth/*" element={<AuthRouter />} />
+          <Route path="/auth/*" element={
+            <VisitorGuard>
+              <AuthRouter />
+            </VisitorGuard>
+          } />
           <Route path="*" element={<NoMatch />} />
         </Routes>
       </Container>

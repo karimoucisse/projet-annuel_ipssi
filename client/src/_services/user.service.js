@@ -8,6 +8,10 @@ let getUser = (userId) => {
     return Axios.get('/auth/users/'+userId);
 }
 
+let getUserInfoById = (userId) => {
+    return Axios.get('/auth/userinfo/'+userId);
+}
+
 export const userService = {
-    getAllUsers, getUser
+    getAllUsers, getUser, getUserInfoById
 }

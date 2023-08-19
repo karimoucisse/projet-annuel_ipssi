@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { accountService } from "../../_services/account.service";
+import { userService } from "../../_services/user.service";
 
 const Subscription = () => {
-
+    const flag = useRef(false);
     const [userInfo, setUserInfo] = useState({
         firstname: '',
         lastname: '',
@@ -25,6 +26,42 @@ const Subscription = () => {
     const [addressIsValidate, setAddressIsValidate] = useState(false);
     const [subscriptionIsValidate, setSubscriptionIsValidate] = useState(false);
     const [counter, setCounter] = useState(0);
+    const [alreadyUser, setAlreadyUser] = useState(false);
+
+    useEffect(() => {
+        if(flag.current === false && accountService.isUserId()){
+            userService.getUserInfoById(accountService.getUserId())
+                .then(res => {
+                    console.log(res.data);
+                    setCounter(3);
+                    setUserIsValidate(true);
+                    setAddressIsValidate(true);
+                    setSubscriptionIsValidate(true);
+                    setUserInfo(
+                        {
+                            ...userInfo,
+                            firstname: res.data.firstname,
+                            lastname: res.data.lastname,
+                            email: res.data.email,
+                            password: '00',
+                            phone: res.data.phone,
+                    
+                            wayType: res.data.wayType,
+                            number: res.data.number,
+                            addressName: res.data.addressName,
+                            postalCode: res.data.postalCode,
+                            state: res.data.state,
+                            city: res.data.city,
+                            country: res.data.country,
+                    
+                            subscription: res.data.subscription,
+                        });
+                    setAlreadyUser(true);
+                })
+                .catch(err => console.log(err));
+        }
+        return () => flag.current = true;
+    }, []);
 
     const onChange = (e) => {
         setUserInfo({
@@ -107,7 +144,7 @@ const Subscription = () => {
         }
     }
 
-    const userInfoForm = (
+    let userInfoForm = ( // TODO: METTRE LES FORMULAIRES DANS COMPONENTS, PASSER JAVASCRIPT POUR NE PAS AFFICHER MAIL ET MOT DE PASSE
                 <form onSubmit={onSubmit}>
                     <h3>Les informations personnelles</h3>
 
@@ -211,7 +248,6 @@ const Subscription = () => {
                     <div className="group">
                         <button>Continuer</button>    
                     </div>
-
                 </form>
     );
 

@@ -9,11 +9,17 @@ const Navigation = () => {
     accountService.logout();
     navigate('/auth/login');
   }
+  let nav;
+  if(accountService.isLogged()){
+    nav = (
+      <button onClick={logout}>Logout</button>
+    );
+  } else {
+    nav = "Ma barre de navigation";
+  }
 
   return (
-      <div>Ici ma nav
-        <button onClick={logout}>Logout</button>
-      </div>
+    <div>{nav}</div>
   );
 };
 

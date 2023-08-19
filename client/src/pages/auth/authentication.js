@@ -23,8 +23,15 @@ const Authentication = () => {
         accountService.login(credentials)
             .then(res => {
                 console.log(res);
-                accountService.saveToken(res.data.token);
-                navigate('/');
+                if(res.data.isActive){
+                    accountService.saveToken(res.data.token);
+                } if(!res.data.isActive){
+                    accountService.saveUserId(res.data.userId);
+                    navigate('/auth/signup');
+                } else {
+                    navigate('/');
+                }
+                
             })
             .catch(err => console.log(err));
     }

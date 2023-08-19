@@ -28,11 +28,17 @@ let getUserId = () => {
     return localStorage.getItem('userId');
 }
 
+let isUserId = () => {
+    let userId = localStorage.getItem('userId');
+    return !!userId;
+}
+
 let saveToken = (token) => {
     localStorage.setItem('token', token);
 }
 
 let logout = () => {
+    localStorage.removeItem('userId');
     localStorage.removeItem('token');
 }
 
@@ -61,5 +67,6 @@ export const accountService = {
     getUserId, 
     otherPayment, 
     getBasket,
-    deleteUserId
+    deleteUserId,
+    isUserId,
 }

@@ -39,40 +39,73 @@ const signup = async (req, res) => {
         subscription,
     } = req.body;
     const foundUser = await User.findOne({ email });
-    if (foundUser) {
+    if (foundUser && foundUser.active) {
         return res.status(409).json({ message: 'email already used' });
     }
-    const saltRounds = 10;
-    const hash = await bcrypt.hash(password, saltRounds);
-    const ans = await User.create({
-        email,
-        password: hash,
-        firstname,
-        lastname,
-        phone,
-    });
+    let ans;
+    if (foundUser) {
+        ans = await User.findOneAndUpdate(
+            { email },
+            {
+                firstname,
+                lastname,
+                phone,
+            }
+        );
 
-    await Address.create({
-        userId: ans._id,
-        wayType,
-        number,
-        addressName,
-        postalCode,
-        state,
-        city,
-        country,
-    });
+        await Address.findOneAndUpdate(
+            { userId: ans._id },
+            {
+                wayType,
+                number,
+                addressName,
+                postalCode,
+                state,
+                city,
+                country,
+            }
+        );
 
-    const ansSubscription = await Subscription.create({
-        userId: ans._id,
-        storage: Number(subscription),
-        price: Number(subscription) * 2000,
-    });
+        await Subscription.findOneAndUpdate(
+            { userId: ans._id },
+            {
+                storage: Number(subscription),
+                price: Number(subscription) * 2000,
+            }
+        );
+    } else {
+        const saltRounds = 10;
+        const hash = await bcrypt.hash(password, saltRounds);
+        ans = await User.create({
+            email,
+            password: hash,
+            firstname,
+            lastname,
+            phone,
+        });
 
-    await Basket.create({
-        userId: ans._id,
-        subscriptionId: ansSubscription._id,
-    });
+        await Address.create({
+            userId: ans._id,
+            wayType,
+            number,
+            addressName,
+            postalCode,
+            state,
+            city,
+            country,
+        });
+
+        const ansSubscription = await Subscription.create({
+            userId: ans._id,
+            storage: Number(subscription),
+            price: Number(subscription) * 2000,
+        });
+
+        await Basket.create({
+            userId: ans._id,
+            subscriptionId: ansSubscription._id,
+        });
+    }
 
     res.status(201).json({
         message: 'user created',
@@ -100,6 +133,7 @@ const login = async (req, res) => {
     }
     const dataToSend = {
         userId: foundUser._id.toString(),
+        isActive: foundUser.active,
         token: jwt.sign(
             { userId: foundUser._id.toString(), email: foundUser.email },
             process.env.TOKEN_SECRET,
@@ -127,8 +161,33 @@ const getUserById = async (req, res) => {
     return res.status(200).json(user);
 };
 
+const getUserInfoById = async (req, res) => {
+    console.log(req.params.userId);
+    const user = await User.findOne({ _id: req.params.userId });
+    const address = await Address.findOne({ userId: req.params.userId });
+    const subscription = await Subscription.findOne({
+        userId: req.params.userId,
+    });
+
+    return res.status(200).json({
+        email: user.email,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        phone: user.phone,
+        wayType: address.wayType,
+        number: address.number,
+        addressName: address.addressName,
+        postalCode: address.postalCode,
+        state: address.state,
+        city: address.city,
+        country: address.country,
+        subscription: subscription.storage.toString(),
+    });
+};
+
 module.exports.signup = signup;
 module.exports.login = login;
 module.exports.deleteUser = deleteUser;
 module.exports.getUsers = getUsers;
 module.exports.getUserById = getUserById;
+module.exports.getUserInfoById = getUserInfoById;

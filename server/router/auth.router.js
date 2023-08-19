@@ -43,4 +43,12 @@ router.get('users/:userId', async (req, res, next) => {
     }
 });
 
+router.get('/userinfo/:userId', async (req, res, next) => {
+    try {
+        await authController.getUserInfoById(req, res, next);
+    } catch (error) {
+        next(error);
+    }
+});
+
 module.exports = router;
