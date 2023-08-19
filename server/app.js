@@ -1,5 +1,6 @@
 const express = require('express');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); // TODO: REMOVE THAT
+const SibApiV3Sdk = require('sib-api-v3-sdk');
 require('dotenv').config();
 require('./database');
 const bodyParser = require('body-parser');
@@ -10,7 +11,6 @@ const fileRouter = require('./router/file.router');
 const adminRouter = require('./router/admin.router');
 const stripeService = require('./router/stripe');
 const Invoice = require('./models/invoice.model');
-const Subscription = require('./models/subscription.model');
 const User = require('./models/user.model');
 const Basket = require('./models/basket.model');
 
@@ -23,10 +23,60 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+const sendEmail = async (email) => {
+    const defaultClient = SibApiV3Sdk.ApiClient.instance;
+    const apiKey = defaultClient.authentications['api-key'];
+    apiKey.apiKey = process.env.BREVO_API_KEY;
+    const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+    const sender = {
+        email: 'ali-66380@hotmail.fr',
+        name: 'Cherif B',
+    };
+    const receivers = [
+        {
+            email,
+        },
+    ];
+    try {
+        await apiInstance.sendTransacEmail({
+            sender,
+            to: receivers,
+            subject: 'Test Email',
+            textContent: 'Test Email',
+            htmlContent: `<div>Bonjour</div>`,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const sendSMS = async (num) => {
+    console.log('je suis là pour envoyer un sms');
+    const defaultClient = SibApiV3Sdk.ApiClient.instance;
+
+    const apiKey = defaultClient.authentications['api-key'];
+    apiKey.apiKey = process.env.BREVO_API_KEY;
+    const apiInstance = new SibApiV3Sdk.TransactionalSMSApi();
+
+    let sendTransacSms = new SibApiV3Sdk.SendTransacSms();
+    const sender = 'ArchiCo';
+    const recipient = num;
+    sendTransacSms = {
+        sender,
+        recipient,
+        content: 'Ceci est un test, je veux envoyer mon premier sms via API',
+    };
+    try {
+        await apiInstance.sendTransacSms(sendTransacSms);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 app.post(
     '/stripe/webhook',
     express.raw({ type: 'application/json' }),
-    async (req, response) => {
+    async (req, res) => {
         let event = req.body;
 
         const endpointSecret =
@@ -41,7 +91,7 @@ app.post(
                 );
             } catch (err) {
                 console.log(err.message);
-                response.status(400).send(`Webhook Error: ${err.message}`);
+                res.status(400).send(`Webhook Error: ${err.message}`);
                 return;
             }
         }
@@ -60,6 +110,8 @@ app.post(
                         userId,
                         quantity: Number(subscription),
                     });
+                    await sendEmail('cherif.bellahouel@hotmail.com');
+                    // await sendSMS('33624864608');
                 } else {
                     console.error('il y a un problème'); // TODO: Renvoyer message d'erreur
                 }
@@ -70,7 +122,7 @@ app.post(
               console.log(`Unhandled event type ${event.type}`);
         }
         // Return a 200 response to acknowledge receipt of the event
-        response.send();
+        res.send();
     }
 );
 
