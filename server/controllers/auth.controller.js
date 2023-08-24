@@ -2,94 +2,93 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 
+const emailRegex =
+    // eslint-disable-next-line no-useless-escape
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 const signup = async (req, res) => {
     const { email, password, firstname, lastname } = req.body;
 
-    if (!email) {
-        return res.status(422).json({ message: 'Email is required' });
+    // Vérifiez la présence des champs requis
+    if (!email || !password || !firstname || !lastname) {
+        return res.status(422).json({ message: 'All fields are required' });
     }
 
-    if (!password) {
-        return res.status(422).json({ message: 'Password is required' });
+    // Vérifiez si l'email est déjà utilisé
+    const foundUser = await User.findOne({ email });
+    if (foundUser) {
+        return res.status(409).json({ message: 'Email already in use' });
     }
 
-    if (!firstname) {
-        return res.status(422).json({ message: 'First name is required' });
-    }
-
-    if (!lastname) {
-        return res.status(422).json({ message: 'Last name is required' });
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    // Vérifiez le format de l'email
     if (!emailRegex.test(email)) {
-        return res
-            .status(400)
-            .json({ message: 'Provide a valid email address' });
+        return res.status(422).json({ message: 'Invalid email format' });
     }
 
-    try {
-        const foundUser = await User.findOne({ email });
-        if (foundUser) {
-            return res.status(409).json({ message: 'Email already used' });
-        }
+    // Hash du mot de passe
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        const saltRounds = 10;
-        const hash = await bcrypt.hash(password, saltRounds);
-        const ans = await User.create({
-            email,
-            password: hash,
-            firstname,
-            lastname,
-        });
+    // Création de l'utilisateur
+    const newUser = await User.create({
+        email,
+        password: hashedPassword,
+        firstname,
+        lastname,
+    });
 
-        res.status(201).json({
-            message: 'User created',
-            user: {
-                id: ans._id,
-                email,
-                firstname,
-                lastname,
-            },
-        });
-    } catch (error) {
-        return res.status(500).json({ message: 'An error occurred' });
-    }
+    // Réponse JSON en cas de succès
+    res.status(201).json({
+        message: 'User created',
+        user: {
+            id: newUser._id,
+            email: newUser.email,
+        },
+    });
+    // Redirection vers la page /login
+    res.redirect('/login');
 };
 
 const login = async (req, res) => {
-    if (!('email' in req.body && 'password' in req.body)) {
+    if (!req.body.email || !req.body.password) {
         return res
             .status(422)
             .json({ message: 'need 2 keys : email, password' });
     }
+
     const { email, password } = req.body;
     const foundUser = await User.findOne({ email });
     if (!foundUser) {
         return res.status(409).json({ message: 'wrong email or password' });
     }
+
     const isValid = await bcrypt.compare(password, foundUser.password);
     if (!isValid) {
         return res.status(409).json({ message: 'wrong email or password' });
     }
+
     const dataToSend = {
         userId: foundUser._id.toString(),
         token: jwt.sign(
-            { userId: foundUser._id.toString(), email: foundUser.email },
-            process.env.TOKEN_SECRET,
             {
-                expiresIn: '10h',
-            }
+                userId: foundUser._id.toString(),
+                email: foundUser.email,
+            },
+            process.env.TOKEN_SECRET,
+            { expiresIn: '10h' }
         ),
     };
     res.status(200).json(dataToSend);
 };
 
 const deleteUser = async (req, res) => {
-    await User.findByIdAndDelete(req.params.userId);
-    return res.status(202).json({ message: 'User deleted !' });
+    const { userId } = req.params;
+    await User.findByIdAndDelete(userId);
+    res.status(202).json({ message: 'User deleted !' });
 };
 
-module.exports.signup = signup;
-module.exports.login = login;
-module.exports.deleteUser = deleteUser;
+module.exports = {
+    signup,
+    login,
+    deleteUser,
+};
