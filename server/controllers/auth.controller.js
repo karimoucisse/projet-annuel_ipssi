@@ -1,10 +1,16 @@
 const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+const Grid = require('gridfs-stream');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const Address = require('../models/address.model');
 const Subscription = require('../models/subscription.model');
 const Basket = require('../models/basket.model');
 const File = require('../models/file.model');
+const { conn } = require('../services/gridfs/gfs.service');
+const sendEmail = require('../services/sendInBlue/sendEmail');
+const accountDeletedTemplate = require('../services/sendInBlue/templates/accountDeleted.template');
+const accountDeletedAdminTemplate = require('../services/sendInBlue/templates/accountDeletedAdmin.template');
 
 const signup = async (req, res) => {
     // TODO: AJOUTER DE LA SECURITE
@@ -149,16 +155,34 @@ const login = async (req, res) => {
 const deleteUser = async (req, res) => {
     // TODO: SUPPRIMER TOUS LES FICHIERS DE L'UTILISATEUR
     // TODO: VOIR COMMENT TOUT SUPPRIMER
-    await Address.findOneAndDelete();
-    await Basket.findOneAndDelete();
-    await Subscription.deleteMany();
-    const filesDeleted = await File.deleteMany();
+    const gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection('uploads');
+    const files = await File.find({ userId: req.user.userId });
+    console.log(files);
+    if (files) {
+        files.map(async (file) => {
+            const fileToDelete = await gfs.files.findOne({ filename: file.fileId });
+            const gsfb = new mongoose.mongo.GridFSBucket(conn.db, { bucketName: 'uploads' });
+            await gsfb.delete(fileToDelete._id, (err, gridStore) => {
+                if (err) {
+                    return res.status(404).json({ err });
+                }
+            });
+        });
+        const filesDeleted = await File.deleteMany({ userId: req.user.userId });
+        console.log(filesDeleted);
+    }
 
+    await Address.findOneAndDelete({ userId: req.user.userId });
+    await Basket.findOneAndDelete({ userId: req.user.userId });
+    await Subscription.deleteMany({ userId: req.user.userId });
     const user = await User.findByIdAndDelete(req.user.userId);
-    // TODO: ENVOYER UN MAIL A L'UTILISATEUR
-    
-    // TODO: ENVOYER UN MAIL A L'ADMIN
-    
+    console.log(user);
+    await sendEmail('cherif.bellahouel@hotmail.com', accountDeletedTemplate);
+    await sendEmail(
+        'cherif.bellahouel@hotmail.com',
+        accountDeletedAdminTemplate
+    ); // TODO: Envoyer le nombre de fichier supprimés + nom de l'utilisateur dans l'email pour admin
     return res.status(202).json({ message: 'User deleted !' });
 };
 

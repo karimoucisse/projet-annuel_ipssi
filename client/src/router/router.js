@@ -9,6 +9,7 @@ import Details from '../pages/details';
 import CheckoutSuccess from '../pages/stripe/checkoutSuccess';
 import CheckoutFailed from '../pages/stripe/checkoutFailed';
 import VisitorGuard from '../_helpers/visitorGuard';
+import Profile from '../pages/profile/profile';
 
 const Routeur = () => {
   return (
@@ -28,6 +29,11 @@ const Routeur = () => {
           <Route path="/admin/*" element={
             <AuthGuard>
               <UserList />
+            </AuthGuard>
+          } />
+          <Route path="/profile/" element={
+            <AuthGuard>
+              <Profile />
             </AuthGuard>
           } />
           <Route path="/checkout-success" element={<CheckoutSuccess />} />

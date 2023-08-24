@@ -11,8 +11,9 @@ const deleteFile = async (req, res) => {
 };
 
 const createFile = async (req) => {
+    console.log('je suis là');
     await File.create({
-        userId: '641da2ea18c64178b07ee515', // req.params.userId,
+        userId: req.user.userId, // req.params.userId,
         fileId: req.file.filename,
         name: req.file.originalname,
         fileSize: req.file.size,

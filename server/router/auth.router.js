@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const authController = require('../controllers/auth.controller');
 const authorization = require('../middlewares/authorization.mid');
+const { openConnection } = require('../services/gridfs/gfs.service');
 
 router.post('/signup', async (req, res, next) => {
     try {
@@ -18,7 +19,7 @@ router.post('/login', async (req, res, next) => {
     }
 });
 
-router.delete('/', authorization, async (req, res, next) => {
+router.delete('/', authorization, openConnection, async (req, res, next) => {
     try {
         await authController.deleteUser(req, res, next);
     } catch (error) {

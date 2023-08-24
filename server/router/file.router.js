@@ -1,46 +1,15 @@
 const router = require('express').Router();
 const mongoose = require('mongoose');
-const multer = require('multer');
 const Grid = require('gridfs-stream');
-const crypto = require('crypto');
-const path = require('path');
-const { GridFsStorage } = require('multer-gridfs-storage');
 const authorization = require('../middlewares/authorization.mid');
 const isFileInDatabase = require('../middlewares/isFileInDatabase.mid');
 const fileController = require('../controllers/file.controller');
-
-const { MONGO_URI } = process.env;
-
-const conn = mongoose.createConnection(MONGO_URI);
-let gfs;
-let gridfsBucket;
-conn.once('open', () => {
-    gfs = Grid(conn.db, mongoose.mongo);
-    gfs.collection('uploads');
-    gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
-        bucketName: 'uploads',
-    });
-});
-
-const storage = new GridFsStorage({
-    url: MONGO_URI,
-    file: (req, file) =>
-        new Promise((resolve, reject) => {
-            crypto.randomBytes(16, (err, buf) => {
-                if (err) {
-                    return reject(err);
-                }
-                const filename =
-                    buf.toString('hex') + path.extname(file.originalname);
-                const fileInfo = {
-                    filename,
-                    bucketName: 'uploads',
-                };
-                resolve(fileInfo);
-            });
-        }),
-});
-const upload = multer({ storage });
+const {
+    conn,
+    upload,
+    openConnection,
+} = require('../services/gridfs/gfs.service');
+const File = require('../models/file.model');
 
 // router.get(
 //    '/detail/:fileId',
@@ -79,8 +48,10 @@ router.get('/files', authorization, async (req, res, next) => {
 router.post(
     '/upload',
     authorization,
+    openConnection,
     upload.single('file'),
     async (req, res, next) => {
+        console.log('heheheheheheheh');
         try {
             await fileController.createFile(req, res);
         } catch (error) {
@@ -89,26 +60,13 @@ router.post(
     }
 );
 
-router.get('/files', (req, res) => {
-    gfs.files.find().toArray((err, files) => {
-        // Check if files
-        if (!files || files.length === 0) {
-            return res.status(404).json({
-                err: 'No files exist',
-            });
-        }
-
-        // Files exist
-        return res.json(files);
-    });
-});
-
 router.get(
     '/files/:fileId',
     authorization,
     isFileInDatabase,
     async (req, res, next) => {
         try {
+            console.log('je devrais être ici aussi');
             return res.json(req.file);
         } catch (error) {
             next(error);
@@ -116,8 +74,13 @@ router.get(
     }
 );
 
-router.get('/stream/:filename', async (req, res) => {
+router.get('/stream/:filename', openConnection, async (req, res, next) => {
     // TODO: Faille de sécurité, on ne vérifie pas si le fichier provient bien de cet utilisateur connecté, dans tous les cas, il faut une autorisation pour afficher le fichier
+    const gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection('uploads');
+    const gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
+        bucketName: 'uploads',
+    });
     const file = await gfs.files.findOne({ filename: req.params.filename });
     if (!file || file.length === 0) {
         return res.status(404).json({
@@ -139,6 +102,7 @@ router.get('/stream/:filename', async (req, res) => {
 router.delete(
     '/files/:id',
     authorization,
+    openConnection,
     isFileInDatabase,
     async (req, res, next) => {
         // Ajouter sécurité

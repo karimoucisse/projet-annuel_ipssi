@@ -7,7 +7,7 @@ let getAllFiles = () => {
 let uploadFile = (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    return Axios.post('/file/upload', formData, {withCredentials: true});
+    return Axios.post('/file/upload', formData);
 }
 
 let displayFile = (fileId) => {
