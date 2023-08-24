@@ -13,7 +13,7 @@ const Invoice = require('./models/invoice.model');
 const User = require('./models/user.model');
 const Basket = require('./models/basket.model');
 const sendEmail = require('./services/sendInBlue/sendEmail');
-const accountCreatedTemplate = require('./services/sendInBlue/templates/accountCreated.template');
+const confirmPaymentTemplate = require('./services/sendInBlue/templates/confirmPayment.template');
 
 const { PORT } = process.env || 3000;
 
@@ -55,7 +55,12 @@ app.post(
             //    break;
             case 'payment_intent.succeeded':
                 if (userId && subscription) {
-                    await User.findByIdAndUpdate(userId, { active: true });
+                    const user = await User.findOne({
+                        _id: userId,
+                    });
+                    if (!user.active) {
+                        await User.findByIdAndUpdate(userId, { active: true });
+                    }
                     await Basket.findOneAndDelete({ userId });
                     await Invoice.create({
                         userId,
@@ -63,7 +68,7 @@ app.post(
                     });
                     await sendEmail(
                         'cherif.bellahouel@hotmail.com',
-                        accountCreatedTemplate
+                        confirmPaymentTemplate
                     );
                     // await sendSMS('33624864608');
                 } else {

@@ -123,6 +123,25 @@ const signup = async (req, res) => {
     });
 };
 
+const addStorage = async (req, res) => {
+    const { subscription } = req.body;
+
+    const ansSubscription = await Subscription.create({
+        userId: req.user.userId,
+        storage: Number(subscription),
+        price: Number(subscription) * 2000,
+    });
+
+    await Basket.create({
+        userId: req.user.userId,
+        subscriptionId: ansSubscription._id,
+    });
+
+    res.status(201).json({
+        message: 'Add subscription',
+    });
+};
+
 const login = async (req, res) => {
     if (!('email' in req.body && 'password' in req.body)) {
         return res
@@ -226,3 +245,4 @@ module.exports.deleteUser = deleteUser;
 module.exports.getUsers = getUsers;
 module.exports.getUserById = getUserById;
 module.exports.getUserInfoById = getUserInfoById;
+module.exports.addStorage = addStorage;

@@ -25,6 +25,7 @@ const Authentication = () => {
                 console.log(res);
                 if(res.data.isActive){
                     accountService.saveToken(res.data.token);
+                    accountService.saveUserId(res.data.userId);
                 } if(!res.data.isActive){
                     accountService.saveUserId(res.data.userId);
                     navigate('/auth/signup');

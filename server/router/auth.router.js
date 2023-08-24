@@ -19,6 +19,15 @@ router.post('/login', async (req, res, next) => {
     }
 });
 
+router.post('/addstorage', authorization, async (req, res, next) => {
+    try {
+        console.log('je suis là');
+        await authController.addStorage(req, res, next);
+    } catch (error) {
+        next(error);
+    }
+});
+
 router.delete('/', authorization, openConnection, async (req, res, next) => {
     try {
         await authController.deleteUser(req, res, next);

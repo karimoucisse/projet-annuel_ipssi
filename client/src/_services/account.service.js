@@ -12,8 +12,8 @@ let payment = (data) => {
     return Axios.post('/stripe/create-checkout-session', data);
 }
 
-let otherPayment = (data) => {
-    return Axios.post('/stripe/create-payment-intent', data);
+let addStorage = (data) => {
+    return Axios.post('/auth/addstorage', data);
 }
 
 let deleteUserId = () => {
@@ -64,9 +64,9 @@ export const accountService = {
     signup, 
     payment, 
     saveUserId, 
-    getUserId, 
-    otherPayment, 
+    getUserId,
     getBasket,
     deleteUserId,
     isUserId,
+    addStorage
 }

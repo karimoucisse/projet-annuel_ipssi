@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { fileService } from '../_services/file.service';
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import { accountService } from "../_services/account.service";
 
 const Main = () => {
     const [files, setFiles] = useState([]);
@@ -31,6 +32,23 @@ const Main = () => {
             .catch(error => console.log(error));
     }
 
+    const addStorage = async () => {
+        await accountService.addStorage({ subscription: "1" })
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => console.log(err));
+
+        await accountService.payment({ subscription: "1", userId: accountService.getUserId() }) // L'utilisateur passe au paiement
+            .then(res => {
+                console.log(res);
+                if(res.data.url){
+                    window.location.href = res.data.url;
+                }
+            })
+            .catch(err => console.log(err));
+    }
+
     const handleFileChange = (e) => {
         if(e.target.files){
             setNewFile(e.target.files[0]);
@@ -40,6 +58,9 @@ const Main = () => {
     return (
         <div className="files">
             Liste des fichiers
+            <div>
+                <button onClick={addStorage}>Ajouter du stockage</button>
+            </div>
             <form onSubmit={onSubmit} encType="multipart/form-data">
                 <div className="group">
                     <label htmlFor="file">Fichier</label>
