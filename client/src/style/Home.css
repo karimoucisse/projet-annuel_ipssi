@@ -12,9 +12,15 @@
 
 }
 
-.image-text {
-    color: #1C2930;
+.principal-text,
+.secondary-text {
+    /* color: #ffbf00; */
+    /* color: #1C2930; */
+    color: #FADF8B;
     /* Couleur du texte pour une meilleure lisibilité */
     text-align: center;
-    padding-top: 200px;
 }
+
+/* .secondary-text {
+    color: #1C2930;
+} */
