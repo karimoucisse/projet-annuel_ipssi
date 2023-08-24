@@ -62,7 +62,7 @@ const Header = () => {
             <Typography
               color={
                 (currentLocation.includes(item.link) && item.link.length > 1) ||
-                (currentLocation === '/' && item.text === 'Accueil')
+                  (currentLocation === '/' && item.text === 'Accueil')
                   ? 'lightgray'
                   : 'white'
               }

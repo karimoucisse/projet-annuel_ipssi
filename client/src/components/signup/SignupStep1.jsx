@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import api from "../../api"
+
 // @mui
 import {
   Box,
@@ -23,8 +25,8 @@ import * as Yup from 'yup';
 // mui icons
 import GoogleIcon from '@mui/icons-material/Google';
 import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
-
 const SignupStep1 = ({ setStep }) => {
+  const [userCreated, setUserCreated] = useState(false);
   const initialValues = {
     firstname: '',
     lastname: '',
@@ -33,9 +35,42 @@ const SignupStep1 = ({ setStep }) => {
     rePassword: '',
   };
 
+  const [errorMessage, setErrorMessage] = useState(undefined);
+
+  const API_URL = "http://localhost:5000"
+
   const handleSubmit = (values) => {
-    console.log(values);
+    const requestBody = {
+      firstname: values.firstname,
+      lastname: values.lastname,
+      email: values.mail,
+      password: values.password,
+    };
+
+    const url = `${API_URL}/auth/signup`;
+
+    api().post(url, requestBody)
+      .then((response) => {
+        // Redirect the user to the login page after successful signup.
+        // Met à jour l'état UserCreated
+        setUserCreated(true);
+        console.log(response)
+        console.log(requestBody)
+      })
+      .catch((error) => {
+        // Handle the error.
+        const errorDescription = error.message;
+        handleError(errorDescription);
+        console.log(JSON.stringify(requestBody))
+      });
   };
+
+  const handleError = (errorDescription) => {
+    // Display an error message to the user.
+    setErrorMessage(errorDescription);
+  };
+
+
   return (
     <Box>
       <Stack direction="row" display="flex" height="100vh">
@@ -73,7 +108,7 @@ const SignupStep1 = ({ setStep }) => {
                   <Stack direction="row" sx={{ mb: 2 }} spacing={3}>
                     <Field
                       as={TextField}
-                      id="name"
+                      id="firstname"
                       name="firstname"
                       size="medium"
                       label="Prénom"
@@ -83,7 +118,7 @@ const SignupStep1 = ({ setStep }) => {
                     />
                     <Field
                       as={TextField}
-                      id="name"
+                      id="lastname"
                       name="lastname"
                       size="medium"
                       label="Nom"
@@ -133,20 +168,37 @@ const SignupStep1 = ({ setStep }) => {
                       Se connecter
                     </Link>
                   </Typography>
-                  <Button
-                    type="submit"
-                    disabled={!isValid}
-                    variant="contained"
-                    size="large"
-                    color="primary"
-                    sx={{
-                      width: '100%',
-                      my: 2,
-                    }}
-                    // onClick={() => setStep('step2')}
-                  >
-                    Suivant
-                  </Button>
+                  {userCreated ? (
+                    <Link to="/signin">
+                      <Button
+                        type="submit"
+                        disabled={!isValid}
+                        variant="contained"
+                        size="large"
+                        color="primary"
+                        sx={{
+                          width: '100%',
+                          my: 2,
+                        }}
+                      >
+                        Suivant
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Button
+                      type="submit"
+                      disabled={!isValid}
+                      variant="contained"
+                      size="large"
+                      color="primary"
+                      sx={{
+                        width: '100%',
+                        my: 2,
+                      }}
+                    >
+                      Suivant
+                    </Button>
+                  )}
                 </Form>
               )}
             </Formik>

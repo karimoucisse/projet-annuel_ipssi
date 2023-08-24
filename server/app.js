@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/auth', authRouter);
 app.use('/file', fileRouter);
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     res.status(500).json({ status: 'error', message: err });
 });
 

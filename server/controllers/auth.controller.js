@@ -2,73 +2,93 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 
-const signup = async (req, res) => {
-    if (!('email' in req.body && 'password' in req.body)) {
-        return res
-            .status(422)
-            .json({ message: 'need 2 keys : email, password' });
-    }
-    const regAlphaNum = new RegExp('^[A-Za-z0-9 ]+$');
+const emailRegex =
+    // eslint-disable-next-line no-useless-escape
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    if (
-        req.body.email === '' ||
-        req.body.email === null ||
-        !regAlphaNum.test(req.body.email) ||
-        req.body.password === '' ||
-        req.body.password === null
-    ) {
-        return res.status(422).json({ message: 'Format is not correct' });
+const signup = async (req, res) => {
+    const { email, password, firstname, lastname } = req.body;
+
+    // Vérifiez la présence des champs requis
+    if (!email || !password || !firstname || !lastname) {
+        return res.status(422).json({ message: 'All fields are required' });
     }
-    const { email, password } = req.body;
+
+    // Vérifiez si l'email est déjà utilisé
     const foundUser = await User.findOne({ email });
     if (foundUser) {
-        return res.status(409).json({ message: 'email already used' });
+        return res.status(409).json({ message: 'Email already in use' });
     }
+
+    // Vérifiez le format de l'email
+    if (!emailRegex.test(email)) {
+        return res.status(422).json({ message: 'Invalid email format' });
+    }
+
+    // Hash du mot de passe
     const saltRounds = 10;
-    const hash = await bcrypt.hash(password, saltRounds);
-    const ans = await User.create({ email, password: hash });
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Création de l'utilisateur
+    const newUser = await User.create({
+        email,
+        password: hashedPassword,
+        firstname,
+        lastname,
+    });
+
+    // Réponse JSON en cas de succès
     res.status(201).json({
-        message: 'user created',
+        message: 'User created',
         user: {
-            id: ans._id,
-            email,
+            id: newUser._id,
+            email: newUser.email,
         },
     });
+    // Redirection vers la page /login
+    res.redirect('/login');
 };
 
 const login = async (req, res) => {
-    if (!('email' in req.body && 'password' in req.body)) {
+    if (!req.body.email || !req.body.password) {
         return res
             .status(422)
             .json({ message: 'need 2 keys : email, password' });
     }
+
     const { email, password } = req.body;
     const foundUser = await User.findOne({ email });
     if (!foundUser) {
         return res.status(409).json({ message: 'wrong email or password' });
     }
+
     const isValid = await bcrypt.compare(password, foundUser.password);
     if (!isValid) {
         return res.status(409).json({ message: 'wrong email or password' });
     }
+
     const dataToSend = {
         userId: foundUser._id.toString(),
         token: jwt.sign(
-            { userId: foundUser._id.toString(), email: foundUser.email },
-            process.env.TOKEN_SECRET,
             {
-                expiresIn: '10h',
-            }
+                userId: foundUser._id.toString(),
+                email: foundUser.email,
+            },
+            process.env.TOKEN_SECRET,
+            { expiresIn: '10h' }
         ),
     };
     res.status(200).json(dataToSend);
 };
 
 const deleteUser = async (req, res) => {
-    await User.findByIdAndDelete(req.params.userId);
-    return res.status(202).json({ message: 'User deleted !' });
+    const { userId } = req.params;
+    await User.findByIdAndDelete(userId);
+    res.status(202).json({ message: 'User deleted !' });
 };
 
-module.exports.signup = signup;
-module.exports.login = login;
-module.exports.deleteUser = deleteUser;
+module.exports = {
+    signup,
+    login,
+    deleteUser,
+};
