@@ -26,9 +26,9 @@ import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
 
 const SignupStep1 = ({ setStep }) => {
   const initialValues = {
-    firstname: '',
-    lastname: '',
-    mail: '',
+    firstName: '',
+    lastName: '',
+    email: '',
     password: '',
     rePassword: '',
   };
@@ -55,15 +55,15 @@ const SignupStep1 = ({ setStep }) => {
                 // formikHelpers.resetForm()  // reset the form after onSubmit
               }}
               validationSchema={Yup.object({
-                firstname: Yup.string()
+                firstName: Yup.string()
                   .required('Prénom requis')
                   .min(2, 'Prénom incorrect'),
-                lastname: Yup.string()
+                lastName: Yup.string()
                   .required('Nom requis')
                   .min(2, 'Nom incorrect'),
-                mail: Yup.string()
-                  .required('Email requis')
-                  .email("E-mail invalide'"),
+                email: Yup.string()
+                  .required('Eemail requis')
+                  .eemail("E-email invalide'"),
                 password: Yup.string().required('Mot de passe requis'),
                 rePassword: Yup.string().required('Mot de passe requis'),
               })}
@@ -74,32 +74,32 @@ const SignupStep1 = ({ setStep }) => {
                     <Field
                       as={TextField}
                       id="name"
-                      name="firstname"
+                      name="firstName"
                       size="medium"
                       label="Prénom"
-                      error={touched.firstname && Boolean(errors.firstname)}
-                      helperText={touched.firstname && errors.firstname}
+                      error={touched.firstName && Boolean(errors.firstName)}
+                      helperText={touched.firstName && errors.firstName}
                       variant="filled"
                     />
                     <Field
                       as={TextField}
                       id="name"
-                      name="lastname"
+                      name="lastName"
                       size="medium"
                       label="Nom"
-                      error={touched.lastname && Boolean(errors.lastname)}
-                      helperText={touched.lastname && errors.lastname}
+                      error={touched.lastName && Boolean(errors.lastName)}
+                      helperText={touched.lastName && errors.lastName}
                       variant="filled"
                     />
                   </Stack>
                   <Field
                     as={TextField}
-                    id="email"
-                    name="mail"
+                    id="eemail"
+                    name="email"
                     size="medium"
-                    label="E-mail"
-                    error={touched.mail && Boolean(errors.mail)}
-                    helperText={touched.mail && errors.mail}
+                    label="E-email"
+                    error={touched.email && Boolean(errors.email)}
+                    helperText={touched.email && errors.email}
                     sx={{ mb: 2, width: '100%' }}
                     variant="filled"
                   />
@@ -143,7 +143,7 @@ const SignupStep1 = ({ setStep }) => {
                       width: '100%',
                       my: 2,
                     }}
-                    // onClick={() => setStep('step2')}
+                    onClick={() => setStep('step2')}
                   >
                     Suivant
                   </Button>
