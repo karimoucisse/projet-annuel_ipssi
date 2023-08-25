@@ -39,7 +39,9 @@ const Signup = () => {
 
   return (
     <Box height="100vh">
-      {step !== 1 && <StepperSection valueArray={stepsValue} step={step} />}
+      {step !== 1 && (
+        <StepperSection valueArray={stepsValue} step={step} setStep={setStep} />
+      )}
       {tab[`step${step}`]}
     </Box>
   );

@@ -4,6 +4,7 @@ import {
   StepConnector,
   StepLabel,
   Stepper,
+  Typography,
   stepConnectorClasses,
 } from '@mui/material';
 import React from 'react';
@@ -13,7 +14,7 @@ import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import EuroIcon from '@mui/icons-material/Euro';
 import styled from '@emotion/styled';
 
-const StepperSection = ({ valueArray, step }) => {
+const StepperSection = ({ valueArray, step, setStep }) => {
   function ColorlibStepIcon(index) {
     const icons = {
       1: <PersonAddAltIcon />,
@@ -86,9 +87,13 @@ const StepperSection = ({ valueArray, step }) => {
       connector={<ColorlibConnector />}
     >
       {valueArray.map((label, index) => (
-        <Step key={index}>
+        <Step
+          key={index}
+          onClick={() => index + 1 < step && setStep(index + 1)}
+          sx={{ cursor: 'pointer' }}
+        >
           <StepLabel StepIconComponent={() => ColorlibStepIcon(index + 1)}>
-            {label}
+            <Typography variant="subtitle1">{label}</Typography>
           </StepLabel>
         </Step>
       ))}
