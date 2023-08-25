@@ -29,6 +29,15 @@ const userSchema = new Schema(
             required: true,
             default: 'USER',
         },
+        subscription: {
+            type: Schema.Types.ObjectId,
+            ref: 'Subcription',
+        },
+        active: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
     },
     { timestamps: true }
 );

@@ -37,12 +37,12 @@ const SignupStep1 = ({ setStep }) => {
     console.log(values);
   };
   return (
-    <Box>
-      <Stack direction="row" display="flex" height="100vh">
+    <Box height="100%">
+      <Stack direction="row" display="flex" height="100%">
         <Box
           display="flex"
           flexDirection="column"
-          flex={0.8}
+          flex={1}
           justifyContent="center"
           alignItems="center"
           sx={{ backgroundColor: '#FAF9F8' }}
@@ -62,8 +62,8 @@ const SignupStep1 = ({ setStep }) => {
                   .required('Nom requis')
                   .min(2, 'Nom incorrect'),
                 email: Yup.string()
-                  .required('Eemail requis')
-                  .eemail("E-email invalide'"),
+                  .required('Email requis')
+                  .email("E-email invalide'"),
                 password: Yup.string().required('Mot de passe requis'),
                 rePassword: Yup.string().required('Mot de passe requis'),
               })}
@@ -73,7 +73,7 @@ const SignupStep1 = ({ setStep }) => {
                   <Stack direction="row" sx={{ mb: 2 }} spacing={3}>
                     <Field
                       as={TextField}
-                      id="name"
+                      id="firstName"
                       name="firstName"
                       size="medium"
                       label="Prénom"
@@ -83,7 +83,7 @@ const SignupStep1 = ({ setStep }) => {
                     />
                     <Field
                       as={TextField}
-                      id="name"
+                      id="lastName"
                       name="lastName"
                       size="medium"
                       label="Nom"
@@ -94,10 +94,10 @@ const SignupStep1 = ({ setStep }) => {
                   </Stack>
                   <Field
                     as={TextField}
-                    id="eemail"
+                    id="email"
                     name="email"
                     size="medium"
-                    label="E-email"
+                    label="E-mail"
                     error={touched.email && Boolean(errors.email)}
                     helperText={touched.email && errors.email}
                     sx={{ mb: 2, width: '100%' }}
@@ -143,7 +143,7 @@ const SignupStep1 = ({ setStep }) => {
                       width: '100%',
                       my: 2,
                     }}
-                    onClick={() => setStep('step2')}
+                    onClick={() => setStep(2)}
                   >
                     Suivant
                   </Button>
