@@ -1,9 +1,17 @@
-import { Box, Step, StepLabel, Stepper } from '@mui/material';
+import {
+  Box,
+  Step,
+  StepConnector,
+  StepLabel,
+  Stepper,
+  stepConnectorClasses,
+} from '@mui/material';
 import React from 'react';
 // mui icons
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import EuroIcon from '@mui/icons-material/Euro';
+import styled from '@emotion/styled';
 
 const StepperSection = ({ valueArray, step }) => {
   function ColorlibStepIcon(index) {
@@ -12,7 +20,6 @@ const StepperSection = ({ valueArray, step }) => {
       2: <AddLocationAltIcon />,
       3: <EuroIcon />,
     };
-
     return (
       <Box
         sx={{
@@ -43,6 +50,29 @@ const StepperSection = ({ valueArray, step }) => {
       </Box>
     );
   }
+  const ColorlibConnector = styled(StepConnector)(() => ({
+    [`&.${stepConnectorClasses.alternativeLabel}`]: {
+      top: 22,
+    },
+    [`&.${stepConnectorClasses.active}`]: {
+      [`& .${stepConnectorClasses.line}`]: {
+        backgroundImage:
+          'linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)',
+      },
+    },
+    [`&.${stepConnectorClasses.completed}`]: {
+      [`& .${stepConnectorClasses.line}`]: {
+        backgroundImage:
+          'linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)',
+      },
+    },
+    [`& .${stepConnectorClasses.line}`]: {
+      height: 3,
+      border: 0,
+      backgroundColor: '#eaeaf0',
+      borderRadius: 1,
+    },
+  }));
   return (
     <Stepper
       alternativeLabel
@@ -53,7 +83,7 @@ const StepperSection = ({ valueArray, step }) => {
         zIndex: 5,
         top: '10px',
       }}
-      // connector={<ColorlibConnector />}
+      connector={<ColorlibConnector />}
     >
       {valueArray.map((label, index) => (
         <Step key={index}>
