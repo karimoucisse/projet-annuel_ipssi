@@ -25,6 +25,7 @@ import GoogleIcon from '@mui/icons-material/Google';
 import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
 
 const SignupStep1 = ({ setStep }) => {
+  const theme = useTheme();
   const initialValues = {
     firstName: '',
     lastName: '',
@@ -186,6 +187,7 @@ const SignupStep1 = ({ setStep }) => {
         </Box>
         <Box
           flex={0.9}
+          backgroundColor={theme.palette.primary.main}
           sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -193,7 +195,7 @@ const SignupStep1 = ({ setStep }) => {
             justifyContent: 'center',
             padding: 4,
             gap: 3,
-            backgroundColor: '#1c2930',
+            // backgroundColor: secondary,
             color: 'white',
             // position: 'relative',
           }}
