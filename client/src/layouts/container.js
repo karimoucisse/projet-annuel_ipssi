@@ -1,3 +1,5 @@
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import Navigation from "./navigation";
 
 const Container = ({children}) => {
@@ -6,7 +8,9 @@ const Container = ({children}) => {
       <div>
         <Navigation />
         <div>
+          <Header />
           {children}
+          <Footer />
         </div>
       </div>
   );

@@ -1,3 +1,4 @@
+import Bubbles from './components/Bubbles';
 import Router from './router/router';
 
 /**
@@ -5,5 +6,10 @@ import Router from './router/router';
  * @returns A component called "Routeur" is being returned.
  */
 export default function App() {
-  return <Router />;
+  return (
+  <>
+    <Bubbles />
+    <Router />
+  </>
+  )
 }
