@@ -180,8 +180,12 @@ const deleteUser = async (req, res) => {
     console.log(files);
     if (files) {
         files.map(async (file) => {
-            const fileToDelete = await gfs.files.findOne({ filename: file.fileId });
-            const gsfb = new mongoose.mongo.GridFSBucket(conn.db, { bucketName: 'uploads' });
+            const fileToDelete = await gfs.files.findOne({
+                filename: file.fileId,
+            });
+            const gsfb = new mongoose.mongo.GridFSBucket(conn.db, {
+                bucketName: 'uploads',
+            });
             await gsfb.delete(fileToDelete._id, (err, gridStore) => {
                 if (err) {
                     return res.status(404).json({ err });

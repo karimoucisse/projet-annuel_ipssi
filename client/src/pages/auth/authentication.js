@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './../../styles/css/auth/auth.css';
 import { accountService } from '../../_services/account.service';
 
 const Authentication = () => {

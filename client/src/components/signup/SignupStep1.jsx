@@ -23,9 +23,13 @@ import * as Yup from 'yup';
 // mui icons
 import GoogleIcon from '@mui/icons-material/Google';
 import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
-
+// Redux
+import { useDispatch, useSelector } from 'react-redux';
+import { updateUser } from '../../redux/userSlice';
 const SignupStep1 = ({ setStep }) => {
   const theme = useTheme();
+  // const { userInfo } = useSelector((select) => select.profile);
+  const dispatch = useDispatch();
   const initialValues = {
     firstName: '',
     lastName: '',
@@ -35,11 +39,19 @@ const SignupStep1 = ({ setStep }) => {
   };
 
   const handleSubmit = (values) => {
-    console.log(values);
+    const userInfo = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      password: values.password,
+    };
+    dispatch(updateUser(userInfo));
+    // console.log(values);
+    // setStep(2);
   };
   return (
-    <Box height="100%">
-      <Stack direction="row" display="flex" height="100%">
+    <Box height="100vh">
+      <Stack direction="row" display="flex" height="100vh">
         <Box
           display="flex"
           flexDirection="column"
@@ -144,7 +156,7 @@ const SignupStep1 = ({ setStep }) => {
                       width: '100%',
                       my: 2,
                     }}
-                    onClick={() => setStep(2)}
+                    // onClick={() => setStep(2)}
                   >
                     Suivant
                   </Button>
@@ -195,7 +207,6 @@ const SignupStep1 = ({ setStep }) => {
             justifyContent: 'center',
             padding: 4,
             gap: 3,
-            // backgroundColor: secondary,
             color: 'white',
             // position: 'relative',
           }}
