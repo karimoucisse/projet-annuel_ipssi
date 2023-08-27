@@ -22,7 +22,6 @@
     "express-session": "^1.17.3",
     "gridfs-stream": "^1.1.1",
     "jsonwebtoken": "^9.0.0",
-<<<<<<< HEAD
     "method-override": "^3.0.0",
     "mongoose": "^7.4.3",
     "multer": "^1.4.2",
@@ -31,11 +30,6 @@
     "path": "^0.12.7",
     "sib-api-v3-sdk": "^8.5.0",
     "stripe": "^12.18.0"
-=======
-    "mongoose": "^7.0.4",
-    "nodemon": "^2.0.22",
-    "stripe": "^12.17.0"
->>>>>>> 8d652f6bca4389a4431ff9aa3a0e3f47efd10ebe
   },
   "devDependencies": {
     "eslint": "^8.38.0",

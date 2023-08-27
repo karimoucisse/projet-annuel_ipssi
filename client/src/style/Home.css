@@ -1,5 +1,5 @@
 .image-background {
-    background-image: url('../../public//assets/architecture.jpg');
+    /* background-image: url('../../public//assets/architecture.jpg'); */
     background-size: cover;
     background-position: center;
     opacity: 0.8;
@@ -9,7 +9,6 @@
     /* 100% de la hauteur de la vue */
     position: relative;
     z-index: -1;
-
 }
 
 .principal-text,

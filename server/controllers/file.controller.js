@@ -1,13 +1,8 @@
 const File = require('../models/file.model');
 
 const getFiles = async (req, res) => {
-<<<<<<< HEAD
-    const files = await File.find({ userId: req.user.userId });
-    res.status(200).json(files);
-=======
     const getFilesByUser = await File.find({ userId: req.user.id });
     res.status(200).json(getFilesByUser);
->>>>>>> 8d652f6bca4389a4431ff9aa3a0e3f47efd10ebe
 };
 
 const deleteFile = async (req, res) => {
@@ -26,7 +21,7 @@ const deleteFile = async (req, res) => {
     }
 };
 
-const createFile = async (req) => {
+const createFile = async (req, res) => {
     console.log('je suis là');
     await File.create({
         userId: req.user.userId, // req.params.userId,

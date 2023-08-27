@@ -12,7 +12,6 @@ const sendEmail = require('../services/sendInBlue/sendEmail');
 const accountDeletedTemplate = require('../services/sendInBlue/templates/accountDeleted.template');
 const accountDeletedAdminTemplate = require('../services/sendInBlue/templates/accountDeletedAdmin.template');
 
-<<<<<<< HEAD
 const signup = async (req, res) => {
     // TODO: AJOUTER DE LA SECURITE
     if (!('email' in req.body && 'password' in req.body)) {
@@ -115,44 +114,6 @@ const signup = async (req, res) => {
         });
     }
 
-=======
-const emailRegex =
-    // eslint-disable-next-line no-useless-escape
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-const signup = async (req, res) => {
-    const { email, password, firstname, lastname } = req.body;
-
-    // Vérifiez la présence des champs requis
-    if (!email || !password || !firstname || !lastname) {
-        return res.status(422).json({ message: 'All fields are required' });
-    }
-
-    // Vérifiez si l'email est déjà utilisé
-    const foundUser = await User.findOne({ email });
-    if (foundUser) {
-        return res.status(409).json({ message: 'Email already in use' });
-    }
-
-    // Vérifiez le format de l'email
-    if (!emailRegex.test(email)) {
-        return res.status(422).json({ message: 'Invalid email format' });
-    }
-
-    // Hash du mot de passe
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Création de l'utilisateur
-    const newUser = await User.create({
-        email,
-        password: hashedPassword,
-        firstname,
-        lastname,
-    });
-
-    // Réponse JSON en cas de succès
->>>>>>> 8d652f6bca4389a4431ff9aa3a0e3f47efd10ebe
     res.status(201).json({
         message: 'User created',
         user: {
@@ -181,6 +142,12 @@ const addStorage = async (req, res) => {
     res.status(201).json({
         message: 'Add subscription',
     });
+};
+
+const getStorage = async (req, res) => {
+    const storage = await Subscription.find({ userId: req.user.userId });
+    const sumStorage = storage.reduce((acc, curr) => console.log(acc), 0); // TODO: REVOIR CA
+    return res.status(200).json({ message: 'sum' });
 };
 
 const login = async (req, res) => {
@@ -217,7 +184,6 @@ const login = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-<<<<<<< HEAD
     // TODO: SUPPRIMER TOUS LES FICHIERS DE L'UTILISATEUR
     // TODO: VOIR COMMENT TOUT SUPPRIMER
     const gfs = Grid(conn.db, mongoose.mongo);
@@ -296,15 +262,4 @@ module.exports.getUsers = getUsers;
 module.exports.getUserById = getUserById;
 module.exports.getUserInfoById = getUserInfoById;
 module.exports.addStorage = addStorage;
-=======
-    const { userId } = req.params;
-    await User.findByIdAndDelete(userId);
-    res.status(202).json({ message: 'User deleted !' });
-};
-
-module.exports = {
-    signup,
-    login,
-    deleteUser,
-};
->>>>>>> 8d652f6bca4389a4431ff9aa3a0e3f47efd10ebe
+module.exports.getStorage = getStorage;

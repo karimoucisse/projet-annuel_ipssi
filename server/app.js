@@ -50,7 +50,7 @@ app.post(
         const { userId, subscription } = event.data.object.metadata;
 
         switch (event.type) {
-            //case 'payment_intent.payment_failed':
+            // case 'payment_intent.payment_failed':
 
             //    break;
             case 'payment_intent.succeeded':
@@ -78,7 +78,7 @@ app.post(
                 break;
             // ... handle other event types
             default:
-              console.log(`Unhandled event type ${event.type}`);
+                console.log(`Unhandled event type ${event.type}`);
         }
         // Return a 200 response to acknowledge receipt of the event
         res.send();
