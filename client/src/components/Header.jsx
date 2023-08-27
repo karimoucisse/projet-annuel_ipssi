@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Avatar,
   Box,
@@ -8,8 +9,8 @@ import {
   Typography,
 } from '@mui/material';
 import ApartmentIcon from '@mui/icons-material/Apartment';
-// mui icons
 import PersonIcon from '@mui/icons-material/Person';
+
 const Header = () => {
   const currentLocation = window.location.pathname;
   const linkList = [
@@ -26,13 +27,14 @@ const Header = () => {
       link: 'support',
     },
   ];
+
   return (
     <Box
       sx={{
-        backgroundColor: '#1c2930',
+        backgroundColor: 'white', // Arrière-plan blanc pour tout le header
         height: '70px',
         px: '100px',
-        color: 'white',
+        color: '#1C2930', // Texte en #1C2930
         display: 'flex',
         alignItems: 'center',
       }}
@@ -41,7 +43,13 @@ const Header = () => {
         <Link href={`/`} color="inherit">
           <Typography
             variant="h5"
-            sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              fontFamily: 'cursive', // Police
+              fontWeight: 'bold',   // Gras
+            }}
           >
             <ApartmentIcon /> ArchiConnect
           </Typography>
@@ -52,32 +60,45 @@ const Header = () => {
         spacing={4}
         sx={{
           flex: 2,
-          color: 'white',
+          color: '#1C2930', // Texte en #1C2930
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
         {linkList.map((item, i) => (
-          <Link href={`/${item.link}`} color="inherit" key={i}>
-            <Typography
-              color={
+          <Link
+            href={`/${item.link}`}
+            color="inherit"
+            key={i}
+            sx={{
+              backgroundColor:
                 (currentLocation.includes(item.link) && item.link.length > 1) ||
-                (currentLocation === '/' && item.text === 'Accueil')
-                  ? 'lightgray'
-                  : 'white'
-              }
-              variant="body1"
-            >
-              {item.text}
-            </Typography>
+                  (currentLocation === '/' && item.text === 'Accueil')
+                  ? '#1C2930' // Couleur de fond lorsque la condition est vraie
+                  : '#F3F3F3', // Couleur de fond lorsque la condition est fausse
+              color:
+                (currentLocation.includes(item.link) && item.link.length > 1) ||
+                  (currentLocation === '/' && item.text === 'Accueil')
+                  ? 'white' // Couleur du texte lorsque la condition est vraie
+                  : '#1C2930', // Couleur du texte lorsque la condition est fausse
+              padding: '8px 16px',
+              borderRadius: '4px',
+              textDecoration: 'none',
+              '&:hover': {
+                backgroundColor: 'white',
+                color: '#1C2930',
+              },
+            }}
+          >
+            <Typography variant="body1">{item.text}</Typography>
           </Link>
         ))}
       </Stack>
       <Box flex={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Chip
           label="Compte"
-          avatar={<Avatar>K</Avatar>}
-          sx={{ color: 'white', cursor: 'pointer' }}
+          avatar={<Avatar><PersonIcon /></Avatar>}
+          sx={{ color: '#1C2930', cursor: 'pointer' }} // Texte en #1C2930
           size="medium"
         />
       </Box>

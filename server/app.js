@@ -96,7 +96,7 @@ app.use('/file', fileRouter);
 app.use('/admin', adminRouter);
 app.use('/stripe', stripeService);
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     res.status(500).json({ status: 'error', message: err });
 });
 

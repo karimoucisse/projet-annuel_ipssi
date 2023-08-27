@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import api from "../../api"
+
 // @mui
 import {
   Box,
@@ -38,6 +40,10 @@ const SignupStep1 = ({ setStep }) => {
     rePassword: '',
   };
 
+  const [errorMessage, setErrorMessage] = useState(undefined);
+
+  const API_URL = "http://localhost:5000"
+
   const handleSubmit = (values) => {
     const userInfo = {
       firstName: values.firstName,
@@ -49,6 +55,13 @@ const SignupStep1 = ({ setStep }) => {
     // console.log(values);
     setStep(2);
   };
+
+  const handleError = (errorDescription) => {
+    // Display an error message to the user.
+    setErrorMessage(errorDescription);
+  };
+
+
   return (
     <Box height="100vh">
       <Stack direction="row" display="flex" height="100vh">
