@@ -142,6 +142,12 @@ const addStorage = async (req, res) => {
     });
 };
 
+const getStorage = async (req, res) => {
+    const storage = await Subscription.find({ userId: req.user.userId });
+    const sumStorage = storage.reduce((acc, curr) => console.log(acc), 0); //TODO: REVOIR CA
+    return res.status(200).json({ message: 'sum' });
+};
+
 const login = async (req, res) => {
     if (!('email' in req.body && 'password' in req.body)) {
         return res
@@ -246,3 +252,4 @@ module.exports.getUsers = getUsers;
 module.exports.getUserById = getUserById;
 module.exports.getUserInfoById = getUserInfoById;
 module.exports.addStorage = addStorage;
+module.exports.getStorage = getStorage;

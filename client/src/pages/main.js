@@ -17,6 +17,11 @@ const Main = () => {
                     setFiles(res.data);
                 })
                 .catch(err => console.log(err));
+            accountService.getStorage()
+                .then(res => {
+                    console.log(res.data)
+                })
+                .catch(err => console.log(err));
         }
 
         return () => flag.current = true;

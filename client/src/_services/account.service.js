@@ -13,7 +13,11 @@ let payment = (data) => {
 }
 
 let addStorage = (data) => {
-    return Axios.post('/auth/addstorage', data);
+    return Axios.post('/auth/storage', data);
+}
+
+let getStorage = () => {
+    return Axios.get('/auth/storage');
 }
 
 let deleteUserId = () => {
@@ -68,5 +72,6 @@ export const accountService = {
     getBasket,
     deleteUserId,
     isUserId,
-    addStorage
+    addStorage,
+    getStorage
 }

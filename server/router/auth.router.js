@@ -19,10 +19,18 @@ router.post('/login', async (req, res, next) => {
     }
 });
 
-router.post('/addstorage', authorization, async (req, res, next) => {
+router.post('/storage', authorization, async (req, res, next) => {
     try {
-        console.log('je suis là');
         await authController.addStorage(req, res, next);
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.get('/storage', authorization, async (req, res, next) => {
+    try {
+        console.log('je suis lààààààààà');
+        await authController.getStorage(req, res, next);
     } catch (error) {
         next(error);
     }
