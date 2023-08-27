@@ -47,7 +47,7 @@ const SignupStep1 = ({ setStep }) => {
     };
     dispatch(updateUser(userInfo));
     // console.log(values);
-    // setStep(2);
+    setStep(2);
   };
   return (
     <Box height="100vh">
