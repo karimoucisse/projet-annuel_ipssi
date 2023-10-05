@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Typography } from "@mui/material";
-import Navigation from "../layouts/Navigation";
+// import Navigation from "../layouts/Navigation";
 import "../style/Home.css"; // Assurez-vous d'importer le fichier CSS
 
 const styles = {
@@ -26,7 +26,7 @@ const styles = {
 
 const Home = () => {
   return (
-    <Navigation>
+    // <Navigation>
       <Container style={styles.homeContainer}>
         {/* Ajoutez l'arrière-plan flou */}
         <div style={styles.blurBackground}></div>
@@ -37,7 +37,7 @@ const Home = () => {
           ArchiConnect est une plateforme sécurisée qui vous permet de stocker et de partager vos fichiers avec vos clients.
         </Typography>
       </Container>
-    </Navigation>
+    // </Navigation>
   );
 };
 
