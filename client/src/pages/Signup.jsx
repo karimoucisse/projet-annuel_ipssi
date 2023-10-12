@@ -28,7 +28,7 @@ import zIndex from '@mui/material/styles/zIndex';
 import StepperSection from '../components/StepperSection';
 import SignupStep3 from '../components/signup/SignupStep3';
 const Signup = () => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const tab = {
     step1: <SignupStep1 setStep={setStep} />,
     step2: <SignupStep2 setStep={setStep} />,

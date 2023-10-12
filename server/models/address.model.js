@@ -8,15 +8,19 @@ const addressSchema = new Schema({
         ref: 'User',
         required: true,
     },
-    wayType: {
-        type: Number,
-        required: true,
-    },
-    number: {
-        type: Number,
-        required: true,
-    },
-    addressName: {
+    // wayType: {
+    //     type: Number,
+    //     required: true,
+    // },
+    // number: {
+    //     type: Number,
+    //     required: true,
+    // },
+    // addressName: {
+    //     type: String,
+    //     required: true,
+    // },
+    address: {
         type: String,
         required: true,
     },

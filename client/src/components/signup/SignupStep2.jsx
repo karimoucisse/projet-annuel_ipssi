@@ -20,12 +20,20 @@ import {
 import { Formik, Form, Field } from 'formik';
 // yup
 import * as Yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateAddress } from '../../redux/addressSlice';
+import StripeCheckout from 'react-stripe-checkout';
 
 const SignupStep2 = ({ setStep }) => {
+  const dispatch = useDispatch();
+  const [stripeToken, setStripeToken] = useState();
+  const stripePubliKey = process.env.STRIPE_PUBLIC_KEY;
+
+  const { addressInfo } = useSelector((state) => state.address);
   const initialValues = {
-    country: '',
+    country: addressInfo.country ? addressInfo.country : '',
     region: '',
-    name: '',
+    // name: '',
     phone: '',
     address: '',
     postalCode: '',
@@ -34,6 +42,11 @@ const SignupStep2 = ({ setStep }) => {
 
   const handleSubmit = (values) => {
     console.log(values);
+    dispatch(updateAddress(values));
+    setStep(3);
+  };
+  const onToken = (token) => {
+    setStripeToken(token);
   };
 
   return (
@@ -51,13 +64,13 @@ const SignupStep2 = ({ setStep }) => {
           validationSchema={Yup.object({
             country: Yup.string().required('Pays requis'),
             region: Yup.string().required('Region requise'),
-            name: Yup.string().required(
-              'Nom complet (prénom et nom de famille) requis',
-            ),
+            // name: Yup.string().required(
+            //   'Nom complet (prénom et nom de famille) requis',
+            // ),
             phone: Yup.string().required('Numero de téléphone requis'),
-            address: Yup.string().required('adresse requise'),
-            postalCode: Yup.string().required('code postale requis'),
-            city: Yup.string().required('ville requis'),
+            address: Yup.string().required('1dresse requise'),
+            postalCode: Yup.number().required('Code postale requis'),
+            city: Yup.string().required('Ville requise'),
           })}
         >
           {({ errors, isValid, touched, dirty }) => (
@@ -84,7 +97,7 @@ const SignupStep2 = ({ setStep }) => {
                   variant="filled"
                 />
               </Stack>
-              <Field
+              {/* <Field
                 as={TextField}
                 id="name"
                 name="name"
@@ -94,7 +107,7 @@ const SignupStep2 = ({ setStep }) => {
                 helperText={touched.name && errors.name}
                 sx={{ mb: 2, width: '100%' }}
                 variant="filled"
-              />
+              /> */}
               <Field
                 as={TextField}
                 id="phone"
@@ -133,7 +146,6 @@ const SignupStep2 = ({ setStep }) => {
                 id="city"
                 name="city"
                 size="medium"
-                type="password"
                 label="Ville"
                 error={touched.city && Boolean(errors.city)}
                 helperText={touched.city && errors.city}

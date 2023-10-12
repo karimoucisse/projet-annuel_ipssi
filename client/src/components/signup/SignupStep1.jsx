@@ -32,17 +32,15 @@ const SignupStep1 = ({ setStep }) => {
   const theme = useTheme();
   // const { userInfo } = useSelector((select) => select.profile);
   const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.user);
   const initialValues = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    rePassword: '',
+    firstName: userInfo?.firstName ? userInfo.firstName : '',
+    lastName: userInfo?.lastName ? userInfo.lastName : '',
+    email: userInfo?.email ? userInfo.email : '',
+    password: userInfo?.password ? userInfo.password : '',
+    rePassword: userInfo?.password ? userInfo.password : '',
   };
-
   const [errorMessage, setErrorMessage] = useState(undefined);
-
-  const API_URL = 'http://localhost:5000';
 
   const handleSubmit = (values) => {
     const userInfo = {
@@ -52,7 +50,6 @@ const SignupStep1 = ({ setStep }) => {
       password: values.password,
     };
     dispatch(updateUser(userInfo));
-    // console.log(values);
     setStep(2);
   };
 
@@ -100,6 +97,9 @@ const SignupStep1 = ({ setStep }) => {
                       as={TextField}
                       id="firstName"
                       name="firstName"
+                      // value={
+                      //   userInfo?.firstName ? userInfo.firstName : undefined
+                      // }
                       size="medium"
                       label="Prénom"
                       error={touched.firstName && Boolean(errors.firstName)}
@@ -110,6 +110,7 @@ const SignupStep1 = ({ setStep }) => {
                       as={TextField}
                       id="lastName"
                       name="lastName"
+                      // value={userInfo?.lastName ? userInfo.lastName : undefined}
                       size="medium"
                       label="Nom"
                       error={touched.lastName && Boolean(errors.lastName)}
@@ -121,6 +122,7 @@ const SignupStep1 = ({ setStep }) => {
                     as={TextField}
                     id="email"
                     name="email"
+                    // value={userInfo?.email ? userInfo.email : undefined}
                     size="medium"
                     label="E-mail"
                     error={touched.email && Boolean(errors.email)}
@@ -132,6 +134,7 @@ const SignupStep1 = ({ setStep }) => {
                     as={TextField}
                     id="password"
                     name="password"
+                    // value={userInfo?.password ? userInfo.password : undefined}
                     size="medium"
                     type="password"
                     label="Mot de pass"
