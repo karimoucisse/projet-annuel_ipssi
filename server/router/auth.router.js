@@ -70,4 +70,13 @@ router.get('/userinfo/:userId', async (req, res, next) => {
     }
 });
 
+// route pour mettre à jour les informations de l'utilisateur
+router.patch('/updateUser', authorization, async (req, res, next) => {
+    try {
+        await authController.updateUser(req, res, next);
+    } catch (error) {
+        next(error);
+    }
+});
+
 module.exports = router;

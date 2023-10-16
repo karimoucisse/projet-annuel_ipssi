@@ -10,6 +10,7 @@ import CheckoutSuccess from '../pages/stripe/checkoutSuccess';
 import CheckoutFailed from '../pages/stripe/checkoutFailed';
 import VisitorGuard from '../_helpers/visitorGuard';
 import Profile from '../pages/profile/profile';
+import MyDocument from '../pages/profile/storage';
 
 const Routeur = () => {
   return (
@@ -17,9 +18,9 @@ const Routeur = () => {
       <Container>
         <Routes>
           <Route path={"/"} element={
-          <AuthGuard>
-            <Main />
-          </AuthGuard>
+            <AuthGuard>
+              <Main />
+            </AuthGuard>
           } />
           <Route path={"/details/:fileId"} element={
             <AuthGuard>
@@ -34,6 +35,11 @@ const Routeur = () => {
           <Route path="/profile/" element={
             <AuthGuard>
               <Profile />
+            </AuthGuard>
+          } />
+          <Route path="/storage/" element={
+            <AuthGuard>
+              <MyDocument />
             </AuthGuard>
           } />
           <Route path="/checkout-success" element={<CheckoutSuccess />} />

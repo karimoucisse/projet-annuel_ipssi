@@ -143,9 +143,14 @@ const addStorage = async (req, res) => {
 };
 
 const getStorage = async (req, res) => {
-    //const storage = await Subscription.find({ userId: req.user.userId });
-    // const sumStorage = storage.reduce((acc, curr) => console.log(acc), 0); //TODO: REVOIR CA
-    return res.status(200).json({ message: 'sum' });
+    try {
+        const storage = await Subscription.find({ userId: req.user.userId });
+        const sumStorage = storage.reduce((acc, curr) => acc + curr.storage, 0);
+        console.log('storage ===> ', sumStorage);
+        return res.status(200).json({ storage, sum: sumStorage });
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
 };
 
 const login = async (req, res) => {
@@ -178,37 +183,55 @@ const login = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-    // TODO: SUPPRIMER TOUS LES FICHIERS DE L'UTILISATEUR
-    // TODO: VOIR COMMENT TOUT SUPPRIMER
-    const gfs = Grid(conn.db, mongoose.mongo);
-    gfs.collection('uploads');
-    const files = await File.find({ userId: req.user.userId });
-    console.log(files);
-    if (files) {
-        files.map(async (file) => {
-            const fileToDelete = await gfs.files.findOne({ filename: file.fileId });
-            const gsfb = new mongoose.mongo.GridFSBucket(conn.db, { bucketName: 'uploads' });
-            await gsfb.delete(fileToDelete._id, (err, gridStore) => {
-                if (err) {
-                    return res.status(404).json({ err });
-                }
-            });
-        });
-        const filesDeleted = await File.deleteMany({ userId: req.user.userId });
-        console.log(filesDeleted);
-    }
+    try {
+        const gfs = Grid(conn.db, mongoose.mongo);
+        gfs.collection('uploads');
+        const files = await File.find({ userId: req.user.userId });
 
-    await Address.findOneAndDelete({ userId: req.user.userId });
-    await Basket.findOneAndDelete({ userId: req.user.userId });
-    await Subscription.deleteMany({ userId: req.user.userId });
-    const user = await User.findByIdAndDelete(req.user.userId);
-    console.log(user);
-    await sendEmail('cherif.bellahouel@hotmail.com', accountDeletedTemplate);
-    await sendEmail(
-        'cherif.bellahouel@hotmail.com',
-        accountDeletedAdminTemplate
-    ); // TODO: Envoyer le nombre de fichier supprimés + nom de l'utilisateur dans l'email pour admin
-    return res.status(202).json({ message: 'User deleted !' });
+        if (files) {
+            const deletePromises = files.map(
+                async (file) =>
+                    new Promise((resolve, reject) => {
+                        gfs.files.findOne(
+                            { filename: file.fileId },
+                            async (err, fileToDelete) => {
+                                if (err) {
+                                    return reject(err);
+                                }
+                                await gfs.delete(fileToDelete._id, () => {
+                                    resolve();
+                                });
+                            }
+                        );
+                    })
+            );
+
+            await Promise.all(deletePromises);
+
+            const filesDeleted = await File.deleteMany({
+                userId: req.user.userId,
+            });
+            console.log(filesDeleted);
+        }
+
+        await Address.findOneAndDelete({ userId: req.user.userId });
+        await Basket.findOneAndDelete({ userId: req.user.userId });
+        await Subscription.deleteMany({ userId: req.user.userId });
+        const user = await User.findByIdAndDelete(req.user.userId);
+
+        await sendEmail(
+            'cherif.bellahouel@hotmail.com',
+            accountDeletedTemplate
+        );
+        await sendEmail(
+            'cherif.bellahouel@hotmail.com',
+            accountDeletedAdminTemplate
+        );
+
+        return res.status(202).json({ message: 'User deleted !' });
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
 };
 
 const getUsers = async (req, res) => {
@@ -228,7 +251,20 @@ const getUserInfoById = async (req, res) => {
     const subscription = await Subscription.findOne({
         userId: req.params.userId,
     });
-
+    console.log('userInfo ==> ', {
+        email: user.email,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        phone: user.phone,
+        wayType: address.wayType,
+        number: address.number,
+        addressName: address.addressName,
+        postalCode: address.postalCode,
+        state: address.state,
+        city: address.city,
+        country: address.country,
+        subscription: subscription.storage.toString(),
+    });
     return res.status(200).json({
         email: user.email,
         firstname: user.firstname,
@@ -245,6 +281,58 @@ const getUserInfoById = async (req, res) => {
     });
 };
 
+const updateUser = async (req, res) => {
+    try {
+        const { userId } = req.user;
+
+        // Vérifiez si l'utilisateur existe
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Récupérez les données mises à jour depuis le corps de la requête
+        const {
+            email,
+            firstname,
+            lastname,
+            phone,
+            wayType,
+            number,
+            addressName,
+            postalCode,
+            state,
+            city,
+            country,
+            subscription,
+        } = req.body;
+
+        // Mettez à jour les informations de l'utilisateur
+        user.email = email;
+        user.firstname = firstname;
+        user.lastname = lastname;
+        user.phone = phone;
+        user.wayType = wayType;
+        user.addressName = addressName;
+        user.number = number;
+        user.postalCode = postalCode;
+        user.state = state;
+        user.city = city;
+        user.country = country;
+        user.subscription = subscription;
+
+        await user.save(); // Enregistrez les modifications dans la base de données
+
+        // Vous pouvez également mettre à jour les informations de l'adresse et de l'abonnement de la même manière
+
+        res.status(200).json({ message: 'User updated', user });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+module.exports.updateUser = updateUser;
 module.exports.signup = signup;
 module.exports.login = login;
 module.exports.deleteUser = deleteUser;

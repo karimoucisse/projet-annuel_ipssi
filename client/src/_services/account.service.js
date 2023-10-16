@@ -20,6 +20,10 @@ let getStorage = () => {
     return Axios.get('/auth/storage');
 }
 
+let updateUser = (userInfo) => {
+    return Axios.patch('/auth/updateUser', userInfo);
+}
+
 let deleteUserId = () => {
     localStorage.removeItem('userId');
 }
@@ -56,22 +60,23 @@ let getToken = () => {
 }
 
 let getBasket = (userId) => {
-    return Axios.get('/basket/'+userId);
+    return Axios.get('/basket/' + userId);
 }
 
 export const accountService = {
-    login, 
-    saveToken, 
-    logout, 
-    isLogged, 
-    getToken, 
-    signup, 
-    payment, 
-    saveUserId, 
+    login,
+    saveToken,
+    logout,
+    isLogged,
+    getToken,
+    signup,
+    payment,
+    saveUserId,
     getUserId,
     getBasket,
     deleteUserId,
     isUserId,
     addStorage,
-    getStorage
+    getStorage,
+    updateUser,
 }

@@ -1,18 +1,22 @@
+import { accountService } from "../_services/account.service";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import Navigation from "./navigation";
 
-const Container = ({children}) => {
+const Container = ({ children }) => {
 
   return (
-      <div>
-        <Navigation />
+    <>
+      {accountService.isLogged() ?
         <div>
           <Header />
           {children}
           <Footer />
         </div>
-      </div>
+        :
+        <div>
+          {children}
+        </div>}
+    </>
   );
 };
 

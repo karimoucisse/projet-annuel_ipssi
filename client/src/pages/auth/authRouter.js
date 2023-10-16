@@ -8,9 +8,9 @@ const AuthRouter = () => {
     return (
         <Routes>
             <Route index element={<Authentication />} />
-            <Route path="login" element={<Authentication />}/>
-            <Route path="signup" element={<Subscription />}/>
-            <Route path="*" element={<NoMatch />}/>
+            <Route path="login" element={<Authentication />} />
+            <Route path="signup" element={<Subscription />} />
+            <Route path="*" element={<NoMatch />} />
         </Routes>
     );
 };

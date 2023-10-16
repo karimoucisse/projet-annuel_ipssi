@@ -5,11 +5,11 @@ let getAllUsers = () => {
 }
 
 let getUser = (userId) => {
-    return Axios.get('/auth/users/'+userId);
+    return Axios.get('/auth/users/' + userId);
 }
 
 let getUserInfoById = (userId) => {
-    return Axios.get('/auth/userinfo/'+userId);
+    return Axios.get('/auth/userinfo/' + userId);
 }
 
 let deleteUser = () => {

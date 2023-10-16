@@ -10,12 +10,10 @@ const Navigation = () => {
     navigate('/auth/login');
   }
   let nav;
-  if(accountService.isLogged()){
+  if (accountService.isLogged()) {
     nav = (
       <button onClick={logout}>Logout</button>
     );
-  } else {
-    nav = "Ma barre de navigation";
   }
 
   return (

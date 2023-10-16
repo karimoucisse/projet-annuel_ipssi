@@ -10,6 +10,8 @@ import {
 } from '@mui/material';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import PersonIcon from '@mui/icons-material/Person';
+import { accountService } from "../_services/account.service";
+
 
 const Header = () => {
   const currentLocation = window.location.pathname;
@@ -20,13 +22,15 @@ const Header = () => {
     },
     {
       text: 'Stockage',
-      link: 'stockage',
+      link: 'storage',
     },
     {
       text: 'Support',
       link: 'support',
     },
   ];
+  if (!accountService.isLogged()
+  ) return
 
   return (
     <Box
