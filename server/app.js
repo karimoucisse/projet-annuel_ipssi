@@ -8,6 +8,7 @@ const cors = require('cors');
 const authRouter = require('./router/auth.router');
 const fileRouter = require('./router/file.router');
 const adminRouter = require('./router/admin.router');
+const subscriptionRouter = require('./router/subscription.router');
 const stripeService = require('./router/stripe');
 const Invoice = require('./models/invoice.model');
 const User = require('./models/user.model');
@@ -94,6 +95,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/auth', authRouter);
 app.use('/file', fileRouter);
 app.use('/admin', adminRouter);
+app.use('/subscription', subscriptionRouter);
 app.use('/stripe', stripeService);
 
 app.use((err, req, res, next) => {

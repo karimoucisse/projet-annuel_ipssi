@@ -4,7 +4,7 @@ import Container from '../layouts/container';
 import Main from '../pages/main';
 import AuthRouter from '../pages/auth/authRouter';
 import AuthGuard from '../_helpers/authGuard';
-import UserList from '../pages/admin/userList';
+import AdminRouter from '../pages/admin/adminRouter';
 import Details from '../pages/details';
 import CheckoutSuccess from '../pages/stripe/checkoutSuccess';
 import CheckoutFailed from '../pages/stripe/checkoutFailed';
@@ -27,9 +27,9 @@ const Routeur = () => {
               <Details />
             </AuthGuard>
           } />
-          <Route path="/admin/*" element={
+          <Route path="/admin/*" element={ // TODO: FAIRE AUTH ADMIN GUARD POUR SECURISER LES ROUTES ADMIN
             <AuthGuard>
-              <UserList />
+              <AdminRouter />
             </AuthGuard>
           } />
           <Route path="/profile/" element={

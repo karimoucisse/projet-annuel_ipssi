@@ -11,7 +11,8 @@ router.get('/users', authorization, isAdmin, async (req, res, next) => {
     }
 });
 
-router.get('/user/:userId', authorization, isAdmin, async (req, res, next) => {
+router.get('/user/:userId', authorization, async (req, res, next) => {
+    console.log('dans admiiiiiiiiiiiinnnnn');
     try {
         await adminController.getUserFiles(req, res);
     } catch (error) {
