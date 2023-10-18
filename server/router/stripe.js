@@ -34,21 +34,21 @@ router.post('/create-checkout-session', async (req, res) => {
         },
     });
 
-    //await Subscription.create({
+    // await Subscription.create({
     //    userId,
     //    storage: Number(subscription),
     //    price: Number(subscription) * 2000,
-    //});
+    // });
 
-    //await Invoice.create({
+    // await Invoice.create({
     //    userId,
     //    quantity: Number(subscription),
-    //});
+    // });
 
     res.send({ url: session.url });
 });
 
-//router.post(
+// router.post(
 //    '/webhook',
 //    express.raw({ type: 'application/json' }),
 //    (request, response) => {
@@ -71,9 +71,9 @@ router.post('/create-checkout-session', async (req, res) => {
 //                return;
 //            }
 //        }
-        // Return a 200 response to acknowledge receipt of the event
+// Return a 200 response to acknowledge receipt of the event
 //        response.send();
 //    }
-//);
+// );
 
 module.exports = router;

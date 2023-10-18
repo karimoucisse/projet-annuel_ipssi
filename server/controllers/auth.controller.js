@@ -217,7 +217,7 @@ const deleteUser = async (req, res) => {
         await Address.findOneAndDelete({ userId: req.user.userId });
         await Basket.findOneAndDelete({ userId: req.user.userId });
         await Subscription.deleteMany({ userId: req.user.userId });
-        const user = await User.findByIdAndDelete(req.user.userId);
+        const user = await User.findByIdAndDelete(req.user.userId); // TODO reprendre les données du user et les insérer dans le mail
 
         await sendEmail(
             'cherif.bellahouel@hotmail.com',
@@ -328,11 +328,80 @@ const updateUser = async (req, res) => {
         res.status(200).json({ message: 'User updated', user });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: 'Internal server error', error });
+    }
+};
+const updateUserAndAdress = async (req, res) => {
+    try {
+        const { userId } = req.user;
+
+        // Vérifiez si l'utilisateur existe
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Récupérez les données mises à jour depuis le corps de la requête
+        const {
+            email,
+            firstname,
+            lastname,
+            phone,
+            wayType,
+            number,
+            addressName,
+            postalCode,
+            state,
+            city,
+            country,
+        } = req.body;
+
+        // Mettez à jour les informations de l'utilisateur
+        user.email = email;
+        user.firstname = firstname;
+        user.lastname = lastname;
+        user.phone = phone;
+
+        // Trouvez l'adresse associée à l'utilisateur
+        let userAddress = await Address.findOne({ userId });
+
+        // Si l'adresse n'existe pas, créez une nouvelle adresse
+        if (!userAddress) {
+            userAddress = new Address({
+                userId,
+                wayType,
+                number,
+                addressName,
+                postalCode,
+                state,
+                city,
+                country,
+            });
+        } else {
+            // Mettez à jour les informations de l'adresse
+            userAddress.wayType = wayType;
+            userAddress.number = number;
+            userAddress.addressName = addressName;
+            userAddress.postalCode = postalCode;
+            userAddress.state = state;
+            userAddress.city = city;
+            userAddress.country = country;
+        }
+
+        await userAddress.save(); // Enregistrez les modifications de l'adresse dans la base de données
+        user.address = userAddress._id; // Associez l'adresse à l'utilisateur
+
+        await user.save(); // Enregistrez les modifications de l'utilisateur dans la base de données
+
+        res.status(200).json({ message: 'User updated', user, userAddress });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error', error });
     }
 };
 
 module.exports.updateUser = updateUser;
+module.exports.updateUserAndAdress = updateUserAndAdress;
 module.exports.signup = signup;
 module.exports.login = login;
 module.exports.deleteUser = deleteUser;

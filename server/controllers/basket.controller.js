@@ -1,5 +1,5 @@
-const Basket = require("../models/basket.model");
-const Subscription = require("../models/subscription.model");
+const Basket = require('../models/basket.model');
+const Subscription = require('../models/subscription.model');
 
 const getBasketByUserId = async (req, res) => {
     const basket = await Basket.findOne({ userId: req.params.userId });

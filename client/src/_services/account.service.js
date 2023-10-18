@@ -24,6 +24,7 @@ let updateUser = (userInfo) => {
     return Axios.patch('/auth/updateUser', userInfo);
 }
 
+
 let deleteUserId = () => {
     localStorage.removeItem('userId');
 }

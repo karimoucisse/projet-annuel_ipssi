@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Container, Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";
+import { Container, Box, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, useTheme } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from "react-router-dom";
 import { accountService } from "../../_services/account.service";
 import { userService } from "../../_services/user.service";
@@ -67,7 +68,7 @@ const Profile = () => {
     const handleSaveChanges = async () => {
         try {
             // Appel de la fonction pour mettre à jour les informations de l'utilisateur
-            await userService.updateUser(editedUserInfo);
+            await accountService.updateUser(editedUserInfo);
             setEditing(false); // Désactiver le mode d'édition après la sauvegarde
             fetchUserInfo(); // Mettre à jour les informations affichées après la sauvegarde
         } catch (error) {
@@ -80,10 +81,61 @@ const Profile = () => {
         navigate("/auth/login");
     };
 
+    const containerStyle = {
+        background: "rgba(255, 255, 255, 0.5)",
+        borderRadius: "10px",
+        padding: "16px",
+        marginBlock: 50
+    };
+    const titleStyle = {
+        color: "#1C2930",
+        textAlign: "center",
+        fontWeight: "bold",
+        borderBottom: "solid 4px #FADF8B",
+        width: 200,
+        marginInline: "auto"
+    };
+    const btnStyle = {
+        color: "#1C2930",
+        backgroundColor: "#FADF8B",
+        width: 250
+    }
+    const btnLogoutStyle = {
+        color: "#FADF8B",
+        backgroundColor: "#1C2930",
+        width: 250,
+        display: "flex",
+        marginLeft: "auto"
+    }
+    // const theme = useTheme();
+
+    const userInfoStyle = {
+        // backgroundColor: "#1C2930", // Couleur de fond #FADF8B
+        // color: "rgba(255, 255, 255, 0.8)", // Couleur du texte #1C2930
+        color: "#1C2930", // Couleur du texte #1C2930
+        padding: "8px",
+        // borderRadius: "10px",
+    };
+    const infoStyle = {
+        marginBottom: "12px", // Marge inférieure entre les éléments
+        borderBottom: `1px solid #FADF8B`, // Trait de séparation
+    }
+
     return (
-        <Container maxWidth="md">
-            <Box mt={2} p={2} bgcolor="#FADF8B">
-                <Typography variant="h4" style={{ color: "#1C2930" }}>
+        <Container maxWidth="md" style={containerStyle}>
+            <Box mt={2}>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleLogout}
+                    style={btnLogoutStyle}
+                    startIcon={<LogoutIcon />}
+                >
+                    Se déconnecter
+                </Button>
+            </Box>
+            <Box mt={2} p={2} >
+                <Typography variant="h4" style={titleStyle}>
                     Mon Profil
                 </Typography>
             </Box>
@@ -169,22 +221,22 @@ const Profile = () => {
                             />
                         </div>
                     ) : (
-                        <div>
-                            <Typography>Email: {userInfo.email}</Typography>
-                            <Typography>Prénom: {userInfo.firstname}</Typography>
-                            <Typography>Nom de famille: {userInfo.lastname}</Typography>
-                            <Typography>Téléphone: {userInfo.phone}</Typography>
-                            <Typography>Type de voie: {userInfo.wayType}</Typography>
-                            <Typography>Numéro: {userInfo.number}</Typography>
-                            <Typography>Nom de l'adresse: {userInfo.addressName}</Typography>
-                            <Typography>Code postal: {userInfo.postalCode}</Typography>
-                            <Typography>État: {userInfo.state}</Typography>
-                            <Typography>Ville: {userInfo.city}</Typography>
-                            <Typography>Pays: {userInfo.country}</Typography>
+                        <div style={userInfoStyle}>
+                            <Typography style={infoStyle}>Email: {userInfo.email}</Typography>
+                            <Typography style={infoStyle}>Prénom: {userInfo.firstname}</Typography>
+                            <Typography style={infoStyle}>Nom de famille: {userInfo.lastname}</Typography>
+                            <Typography style={infoStyle}>Téléphone: {userInfo.phone}</Typography>
+                            <Typography style={infoStyle}>Type de voie: {userInfo.wayType}</Typography>
+                            <Typography style={infoStyle}>Numéro: {userInfo.number}</Typography>
+                            <Typography style={infoStyle}>Nom de l'adresse: {userInfo.addressName}</Typography>
+                            <Typography style={infoStyle}>Code postal: {userInfo.postalCode}</Typography>
+                            <Typography style={infoStyle}>État: {userInfo.state}</Typography>
+                            <Typography style={infoStyle}>Ville: {userInfo.city}</Typography>
+                            <Typography style={infoStyle}>Pays: {userInfo.country}</Typography>
                         </div>
                     )}
                 </Box>}
-            <Box mt={4}>
+            <Box mt={4} display="flex" justifyContent="space-around">
                 {isEditing ? (
                     <Button
                         variant="contained"
@@ -200,28 +252,20 @@ const Profile = () => {
                         color="secondary"
                         startIcon={<EditIcon style={{ color: "#1C2930" }} />}
                         onClick={handleToggleEdit}
+                        style={btnStyle}
                     >
                         Modifier mon profil
                     </Button>
                 )}
-            </Box>
-            <Box mt={2}>
+
                 <Button
                     variant="contained"
                     color="secondary"
                     startIcon={<DeleteIcon style={{ color: "#1C2930" }} />}
                     onClick={handleDeleteClick}
+                    style={btnStyle}
                 >
                     Supprimer mon compte
-                </Button>
-            </Box>
-            <Box mt={2}>
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleLogout}
-                >
-                    Logout
                 </Button>
             </Box>
 
