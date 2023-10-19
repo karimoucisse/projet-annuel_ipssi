@@ -8,7 +8,12 @@ let getSubscriptions = () => {
     return Axios.get('/subscription');
 }
 
+let getUserFilesSizes = () => {
+    return Axios.get('/subscription/current_size');
+}
+
 export const adminService = {
     getUserFiles,
-    getSubscriptions
+    getSubscriptions,
+    getUserFilesSizes
 }
