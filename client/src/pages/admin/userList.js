@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userService } from '../../_services/user.service';
-import { adminService } from '../../_services/admin.service';
+import AdminService from '../../_services/admin.service';
 
 const UserList = () => {
     let navigate = useNavigate();
@@ -18,13 +18,13 @@ const UserList = () => {
                     setUsers(res.data);
                 })
                 .catch(err => console.log(err));
-            adminService.getSubscriptions()
+            AdminService.getSubscriptions()
                 .then(res => {
                     console.log(res.data);
                     setSubscriptions(res.data);
                 })
                 .catch(err => console.log(err));
-            adminService.getUserFilesSizes()
+            AdminService.getUserFilesSizes()
                 .then(res => {
                     console.log(res.data);
                     setFilesSizesByUser(res.data);
