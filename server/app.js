@@ -9,6 +9,7 @@ const authRouter = require('./router/auth.router');
 const fileRouter = require('./router/file.router');
 const adminRouter = require('./router/admin.router');
 const subscriptionRouter = require('./router/subscription.router');
+const invoiceRouter = require('./router/invoice.router');
 const stripeService = require('./router/stripe');
 const Invoice = require('./models/invoice.model');
 const User = require('./models/user.model');
@@ -116,6 +117,7 @@ app.use('/file', fileRouter);
 app.use('/admin', adminRouter);
 app.use('/subscription', subscriptionRouter);
 app.use('/stripe', stripeService);
+app.use('/invoice', invoiceRouter);
 
 app.use((err, req, res, next) => {
     res.status(500).json({ status: 'error', message: err });
