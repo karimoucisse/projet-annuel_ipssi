@@ -5,7 +5,7 @@ const Subscription = require('../models/subscription.model');
 require('dotenv').config();
 
 router.post('/create-checkout-session', async (req, res) => {
-    const { subscription, userId } = req.body;
+    const { userId } = req.body;
     const session = await stripe.checkout.sessions.create({
         line_items: [
             {
@@ -14,7 +14,7 @@ router.post('/create-checkout-session', async (req, res) => {
                     product_data: {
                         name: 'Subscription to Archiconnect',
                     },
-                    unit_amount: Number(subscription) * 2000,
+                    unit_amount: 2000,
                 },
                 quantity: 1,
             },
@@ -23,13 +23,11 @@ router.post('/create-checkout-session', async (req, res) => {
         success_url: `${process.env.CLIENT_URL}/checkout-success`,
         cancel_url: `${process.env.CLIENT_URL}/checkout-failed`,
         metadata: {
-            userId,
-            subscription,
+            userId
         },
         payment_intent_data: {
             metadata: {
                 userId,
-                subscription,
             },
         },
     });

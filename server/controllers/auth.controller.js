@@ -77,7 +77,7 @@ const signup = async (req, res) => {
             { userId: ans._id },
             {
                 storage: Number(subscription),
-                price: Number(subscription) * 2000,
+                price: 2000,
             }
         );
     } else {
@@ -102,16 +102,10 @@ const signup = async (req, res) => {
             country,
         });
 
-        const ansSubscription = await Subscription.create({
-            userId: ans._id,
-            storage: Number(subscription),
-            price: Number(subscription) * 2000,
-        });
-
-        await Basket.create({
-            userId: ans._id,
-            subscriptionId: ansSubscription._id,
-        });
+        //await Basket.create({
+        //    userId: ans._id,
+        //    subscriptionId: ansSubscription._id,
+        //});
     }
 
     res.status(201).json({
@@ -124,18 +118,12 @@ const signup = async (req, res) => {
 };
 
 const addStorage = async (req, res) => {
-    const { subscription } = req.body;
+    // const ansSubscription = await Subscription.findOne({ userId: req.user.userId });
 
-    const ansSubscription = await Subscription.create({
-        userId: req.user.userId,
-        storage: Number(subscription),
-        price: Number(subscription) * 2000,
-    });
-
-    await Basket.create({
-        userId: req.user.userId,
-        subscriptionId: ansSubscription._id,
-    });
+    //await Basket.create({
+    //    userId: req.user.userId,
+    //    subscriptionId: ansSubscription._id,
+    //});
 
     res.status(201).json({
         message: 'Add subscription',

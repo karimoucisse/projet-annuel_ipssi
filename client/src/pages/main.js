@@ -43,13 +43,13 @@ const Main = () => {
     }
 
     const addStorage = async () => {
-        await accountService.addStorage({ subscription: "1" })
-            .then(res => {
-                console.log(res);
-            })
-            .catch(err => console.log(err));
+        //await accountService.addStorage({ subscription: "1" })
+        //    .then(res => {
+        //        console.log(res);
+        //    })
+        //    .catch(err => console.log(err));
 
-        await accountService.payment({ subscription: "1", userId: accountService.getUserId() }) // L'utilisateur passe au paiement
+        await accountService.payment({ userId: accountService.getUserId() }) // L'utilisateur passe au paiement
             .then(res => {
                 console.log(res);
                 if(res.data.url){

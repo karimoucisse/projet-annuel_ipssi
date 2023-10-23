@@ -13,6 +13,7 @@ const stripeService = require('./router/stripe');
 const Invoice = require('./models/invoice.model');
 const User = require('./models/user.model');
 const Basket = require('./models/basket.model');
+const Subscription = require('./models/subscription.model');
 const sendEmail = require('./services/sendInBlue/sendEmail');
 const confirmPaymentTemplate = require('./services/sendInBlue/templates/confirmPayment.template');
 
@@ -48,29 +49,47 @@ app.post(
             }
         }
 
-        const { userId, subscription } = event.data.object.metadata;
+        const { userId } = event.data.object.metadata;
 
         switch (event.type) {
             //case 'payment_intent.payment_failed':
 
             //    break;
             case 'payment_intent.succeeded':
-                if (userId && subscription) {
+                if (userId) {
                     const user = await User.findOne({
                         _id: userId,
                     });
                     if (!user.active) {
                         await User.findByIdAndUpdate(userId, { active: true });
                     }
-                    await Basket.findOneAndDelete({ userId });
+                    const alreadySubscription = await Subscription.findOne({ userId });
+                    if(alreadySubscription){
+                        await Subscription.findOneAndUpdate({
+                            userId
+                        },
+                        {
+                            storage: Number(alreadySubscription.storage) + 1,
+                            price: Number(alreadySubscription.price) + 2000
+                        });
+                    } else {
+                        await Subscription.create({
+                            userId,
+                            storage: 1,
+                            price: 2000,
+                        });
+                    }
+
+                    // await Basket.findOneAndDelete({ userId });
                     await Invoice.create({
                         userId,
-                        quantity: Number(subscription),
+                        quantity: 1,
+                        designation: (alreadySubscription) ? 'Adding storage' : 'Subscription to ArchiConnect'
                     });
-                    await sendEmail(
-                        'cherif.bellahouel@hotmail.com',
-                        confirmPaymentTemplate
-                    );
+                    //await sendEmail(
+                    //    user.email,
+                    //    confirmPaymentTemplate
+                    //);
                     // await sendSMS('33624864608');
                 } else {
                     console.error('il y a un problème'); // TODO: Renvoyer message d'erreur
