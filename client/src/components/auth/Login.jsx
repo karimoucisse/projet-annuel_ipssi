@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { accountService } from '../../_services/account.service';
+
 // @mui
 import {
     Box,
@@ -25,10 +26,11 @@ import * as Yup from 'yup';
 // mui icons
 import GoogleIcon from '@mui/icons-material/Google';
 import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
+import ArchiConnectContainer from './ArchiConnectContainer';
 
 const Login = () => {
     const navigate = useNavigate();
-    
+
     const credentials = {
         email: '',
         password: '',
@@ -41,16 +43,16 @@ const Login = () => {
         accountService.login(credentials)
             .then(res => {
                 console.log(res);
-                if(res.data.isActive){
+                if (res.data.isActive) {
                     accountService.saveToken(res.data.token);
                     accountService.saveUserId(res.data.userId);
-                } if(!res.data.isActive){
+                } if (!res.data.isActive) {
                     accountService.saveUserId(res.data.userId);
                     navigate('/auth/signup');
                 } else {
                     navigate('/');
                 }
-                
+
             })
             .catch(err => console.log(err));
     }
@@ -71,9 +73,9 @@ const Login = () => {
                     flex={0.8}
                     justifyContent="center"
                     alignItems="center"
-                    sx={{ backgroundColor: '#FAF9F8' }}
+                    sx={{ backdropFilter: 'blur(10px)', backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
                 >
-                    <Stack width="400px">
+                    <Stack width="50vw">
                         <Formik
                             initialValues={credentials}
                             onSubmit={(values) => {
@@ -138,38 +140,7 @@ const Login = () => {
                         </Formik>
                     </Stack>
                 </Box>
-                <Box
-                    flex={0.9}
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        padding: 4,
-                        gap: 3,
-                        backgroundColor: '#1c2930',
-                        color: 'white',
-                        // position: 'relative',
-                    }}
-                >
-                    <Typography variant="h2" textAlign="center" width="100%">
-                        ArchiConnect
-                    </Typography>
-                    <Typography variant="subtitle1">
-                        Conservez vos fichiers en toute sécurité, prêts à <br /> être
-                        consultés et partagés à tout moment.
-                    </Typography>
-                    {/* <Box
-                     sx={{ position: 'absolute', bottom: '40px', right: '-50px' }}
-                     >
-                     <Avatar
-                       variant="square"
-                       alt="Architecture"
-                       src="/assets/architecture.jpg"
-                       sx={{ width: '400px', height: '400px' }}
-                     />
-                    </Box> */}
-                </Box>
+                <ArchiConnectContainer />
             </Stack>
         </Box>
     );

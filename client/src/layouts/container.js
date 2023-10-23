@@ -4,26 +4,20 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 
 const Container = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // État pour vérifier l'authentification
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     if (accountService.isLogged()) {
       setIsAuthenticated(true);
     }
-  }, [isAuthenticated]);
+  }, []);
 
   return (
-    <>
-      {isAuthenticated ? (
-        <div>
-          <Header />
-          {children}
-          <Footer />
-        </div>
-      ) : (
-        <div>{children}</div>
-      )}
-    </>
+    <div>
+      {isAuthenticated && <Header />}
+      {children}
+      {isAuthenticated && <Footer />}
+    </div>
   );
 };
 

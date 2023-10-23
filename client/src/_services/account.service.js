@@ -20,11 +20,6 @@ let getStorage = () => {
     return Axios.get('/auth/storage');
 }
 
-let updateUser = (userInfo) => {
-    return Axios.patch('/auth/updateUser', userInfo);
-}
-
-
 let deleteUserId = () => {
     localStorage.removeItem('userId');
 }
@@ -79,5 +74,4 @@ export const accountService = {
     isUserId,
     addStorage,
     getStorage,
-    updateUser,
 }

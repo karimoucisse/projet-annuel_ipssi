@@ -16,6 +16,10 @@ let deleteUser = () => {
     return Axios.delete('/auth/');
 }
 
+let updateUser = (userInfo) => {
+    return Axios.patch('/auth/updateUser', userInfo);
+}
+
 export const userService = {
-    getAllUsers, getUser, getUserInfoById, deleteUser
+    getAllUsers, getUser, getUserInfoById, deleteUser, updateUser
 }

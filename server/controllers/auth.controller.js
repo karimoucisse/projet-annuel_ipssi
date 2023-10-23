@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
+const Invoice = require('../models/invoice.model');
 const Address = require('../models/address.model');
 const Subscription = require('../models/subscription.model');
 const Basket = require('../models/basket.model');
@@ -152,6 +153,20 @@ const getStorage = async (req, res) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+// const getInvoice = async (req, res) => {
+//     try {
+//         // Récupérez les factures pour l'utilisateur actuellement authentifié (req.user.userId)
+//         const invoices = await Invoice.find({ userId: req.user.userId });
+
+//         if (!invoices) {
+//             return res.status(404).json({ error: 'Aucune facture trouvée.' });
+//         }
+//         console.log('invoices ==> ', invoices);
+//         return res.status(200).json(invoices);
+//     } catch (error) {
+//         return res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// };
 
 const login = async (req, res) => {
     if (!('email' in req.body && 'password' in req.body)) {
@@ -182,54 +197,87 @@ const login = async (req, res) => {
     res.status(200).json(dataToSend);
 };
 
-const deleteUser = async (req, res) => {
-    try {
-        const gfs = Grid(conn.db, mongoose.mongo);
-        gfs.collection('uploads');
-        const files = await File.find({ userId: req.user.userId });
+const deleteFilesForUser = (userId) => {
+    const gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection('uploads');
 
+    File.find({ userId }).then((files) => {
         if (files) {
             const deletePromises = files.map(
-                async (file) =>
+                (file) =>
                     new Promise((resolve, reject) => {
                         gfs.files.findOne(
                             { filename: file.fileId },
-                            async (err, fileToDelete) => {
+                            (err, fileToDelete) => {
                                 if (err) {
-                                    return reject(err);
+                                    reject(err);
+                                } else {
+                                    gfs.delete(
+                                        fileToDelete._id,
+                                        (deleteErr) => {
+                                            if (deleteErr) {
+                                                reject(deleteErr);
+                                            } else {
+                                                resolve();
+                                            }
+                                        }
+                                    );
                                 }
-                                await gfs.delete(fileToDelete._id, () => {
-                                    resolve();
-                                });
                             }
                         );
                     })
             );
 
-            await Promise.all(deletePromises);
-
-            const filesDeleted = await File.deleteMany({
-                userId: req.user.userId,
-            });
-            console.log(filesDeleted);
+            Promise.all(deletePromises)
+                .then(() => {
+                    File.deleteMany({ userId }).then((filesDeleted) => {
+                        console.log('filesDeleted ==>', filesDeleted);
+                    });
+                })
+                .catch((err) => {
+                    console.error(
+                        `Erreur lors de la suppression des fichiers : ${err.message}`
+                    );
+                });
         }
+    });
+};
 
-        await Address.findOneAndDelete({ userId: req.user.userId });
-        await Basket.findOneAndDelete({ userId: req.user.userId });
-        await Subscription.deleteMany({ userId: req.user.userId });
-        const user = await User.findByIdAndDelete(req.user.userId); // TODO reprendre les données du user et les insérer dans le mail
+const sendConfirmationEmails = async (userEmail) => {
+    // Envoyer un e-mail de confirmation à l'utilisateur
+    await sendEmail(userEmail, accountDeletedTemplate);
 
-        await sendEmail(
-            'cherif.bellahouel@hotmail.com',
-            accountDeletedTemplate
-        );
-        await sendEmail(
-            'cherif.bellahouel@hotmail.com',
-            accountDeletedAdminTemplate
-        );
+    // Envoyer un e-mail de confirmation à l'administrateur
+    await sendEmail(
+        'cherif.bellahouel@hotmail.com',
+        accountDeletedAdminTemplate
+    );
+};
+
+const cleanupUserData = async (userId) => {
+    await Address.findOneAndDelete({ userId });
+    await Basket.findOneAndDelete({ userId });
+    await Subscription.deleteMany({ userId });
+
+    const user = await User.findByIdAndDelete(userId);
+
+    // Envoyer des e-mails de confirmation
+    await sendConfirmationEmails(user.email);
+};
+
+const deleteUser = async (req, res) => {
+    try {
+        // Supprimer les fichiers associés à l'utilisateur (s'ils existent)
+        deleteFilesForUser(req.user.userId);
+
+        // Supprimer les données de l'utilisateur et envoyer des e-mails
+        cleanupUserData(req.user.userId);
 
         return res.status(202).json({ message: 'User deleted !' });
     } catch (error) {
+        console.error(
+            `Erreur lors de la suppression de l'utilisateur : ${error.message}`
+        );
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -331,6 +379,7 @@ const updateUser = async (req, res) => {
         res.status(500).json({ message: 'Internal server error', error });
     }
 };
+
 const updateUserAndAdress = async (req, res) => {
     try {
         const { userId } = req.user;
@@ -341,7 +390,6 @@ const updateUserAndAdress = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Récupérez les données mises à jour depuis le corps de la requête
         const {
             email,
             firstname,
@@ -356,16 +404,13 @@ const updateUserAndAdress = async (req, res) => {
             country,
         } = req.body;
 
-        // Mettez à jour les informations de l'utilisateur
         user.email = email;
         user.firstname = firstname;
         user.lastname = lastname;
         user.phone = phone;
 
-        // Trouvez l'adresse associée à l'utilisateur
         let userAddress = await Address.findOne({ userId });
 
-        // Si l'adresse n'existe pas, créez une nouvelle adresse
         if (!userAddress) {
             userAddress = new Address({
                 userId,
@@ -378,7 +423,6 @@ const updateUserAndAdress = async (req, res) => {
                 country,
             });
         } else {
-            // Mettez à jour les informations de l'adresse
             userAddress.wayType = wayType;
             userAddress.number = number;
             userAddress.addressName = addressName;
@@ -388,10 +432,10 @@ const updateUserAndAdress = async (req, res) => {
             userAddress.country = country;
         }
 
-        await userAddress.save(); // Enregistrez les modifications de l'adresse dans la base de données
+        await userAddress.save();
         user.address = userAddress._id; // Associez l'adresse à l'utilisateur
 
-        await user.save(); // Enregistrez les modifications de l'utilisateur dans la base de données
+        await user.save();
 
         res.status(200).json({ message: 'User updated', user, userAddress });
     } catch (error) {
@@ -410,3 +454,4 @@ module.exports.getUserById = getUserById;
 module.exports.getUserInfoById = getUserInfoById;
 module.exports.addStorage = addStorage;
 module.exports.getStorage = getStorage;
+// module.exports.getInvoice = getInvoice;
