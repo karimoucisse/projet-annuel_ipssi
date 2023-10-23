@@ -11,7 +11,7 @@ router.get('/users', authorization, isAdmin, async (req, res, next) => {
     }
 });
 
-router.get('/user/:userId', authorization, isAdmin, async (req, res, next) => {
+router.get('/user/:userId', authorization, async (req, res, next) => {
     try {
         await adminController.getUserFiles(req, res);
     } catch (error) {
@@ -19,7 +19,7 @@ router.get('/user/:userId', authorization, isAdmin, async (req, res, next) => {
     }
 });
 
-router.get('/statistics', authorization, isAdmin, async (req, res, next) => {
+router.get('/statistics', authorization, async (req, res, next) => { // TODO: REMETTRE ISADMIN MIDDLEWARE
     try {
         await adminController.getStatistics(req, res);
     } catch (error) {

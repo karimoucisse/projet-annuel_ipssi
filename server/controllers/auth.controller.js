@@ -78,7 +78,7 @@ const signup = async (req, res) => {
             { userId: ans._id },
             {
                 storage: Number(subscription),
-                price: Number(subscription) * 2000,
+                price: 2000,
             }
         );
     } else {
@@ -125,13 +125,7 @@ const signup = async (req, res) => {
 };
 
 const addStorage = async (req, res) => {
-    const { subscription } = req.body;
-
-    const ansSubscription = await Subscription.create({
-        userId: req.user.userId,
-        storage: Number(subscription),
-        price: Number(subscription) * 2000,
-    });
+    // const ansSubscription = await Subscription.findOne({ userId: req.user.userId });
 
     await Basket.create({
         userId: req.user.userId,

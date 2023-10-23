@@ -32,6 +32,14 @@ router.get('/files', authorization, async (req, res, next) => {
     }
 });
 
+router.get('/search/:userId', authorization, async (req, res, next) => {
+    try {
+        await fileController.searchFiles(req, res, next);
+    } catch (error) {
+        next(error);
+    }
+});
+
 // router.delete(
 //    '/:fileId',
 //    authorization,
@@ -51,7 +59,6 @@ router.post(
     openConnection,
     upload.single('file'),
     async (req, res, next) => {
-        console.log('heheheheheheheh');
         try {
             await fileController.createFile(req, res);
         } catch (error) {
@@ -100,20 +107,11 @@ router.get('/stream/:filename', openConnection, async (req, res, next) => {
 });
 
 router.delete(
-    '/files/:id',
+    '/:fileId',
     authorization,
-    openConnection,
     isFileInDatabase,
     async (req, res, next) => {
-        // Ajouter sécurité
-        await gfs.remove(
-            { filename: req.file.fileid, root: 'uploads' },
-            (err, gridStore) => {
-                if (err) {
-                    return res.status(404).json({ err });
-                }
-            }
-        );
+        console.log('je suis bien là, dans le delete file');
         try {
             await fileController.deleteFile(req, res, next);
         } catch (error) {

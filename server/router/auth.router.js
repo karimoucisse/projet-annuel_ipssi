@@ -29,7 +29,6 @@ router.post('/storage', authorization, async (req, res, next) => {
 
 router.get('/storage', authorization, async (req, res, next) => {
     try {
-        console.log('je suis lààààààààà');
         await authController.getStorage(req, res, next);
     } catch (error) {
         next(error);

@@ -11,6 +11,7 @@ const authorization = (req, res, next) => {
         };
         next();
     } catch (error) {
+        console.log('error authorization');
         next('=> token not valid');
     }
 };

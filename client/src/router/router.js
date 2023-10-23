@@ -4,13 +4,13 @@ import Container from '../layouts/container';
 import Main from '../pages/main';
 import AuthRouter from '../pages/auth/authRouter';
 import AuthGuard from '../_helpers/authGuard';
-import UserList from '../pages/admin/userList';
+import AdminRouter from '../pages/admin/adminRouter';
 import Details from '../pages/details';
 import CheckoutSuccess from '../pages/stripe/checkoutSuccess';
 import CheckoutFailed from '../pages/stripe/checkoutFailed';
 import VisitorGuard from '../_helpers/visitorGuard';
-import Profile from '../pages/profile/profile';
 import MyDocument from '../pages/profile/storage';
+import ProfileRouter from '../pages/profile/profileRouter';
 
 const Routeur = () => {
   return (
@@ -27,14 +27,14 @@ const Routeur = () => {
               <Details />
             </AuthGuard>
           } />
-          <Route path="/admin/*" element={
+          <Route path="/admin/*" element={ // TODO: FAIRE AUTH ADMIN GUARD POUR SECURISER LES ROUTES ADMIN
             <AuthGuard>
-              <UserList />
+              <AdminRouter />
             </AuthGuard>
           } />
-          <Route path="/profile/" element={
+          <Route path="/profile/*" element={
             <AuthGuard>
-              <Profile />
+              <ProfileRouter />
             </AuthGuard>
           } />
           <Route path="/storage/" element={
