@@ -1,4 +1,7 @@
 const File = require('../models/file.model');
+const mongoose = require('mongoose');
+const Grid = require('gridfs-stream');
+const { conn } = require('../services/gridfs/gfs.service');
 
 const getFiles = async (req, res) => {
     const files = await File.find({ userId: req.user.userId });
@@ -12,11 +15,19 @@ const searchFiles = async (req, res) => {
 };
 
 const deleteFile = async (req, res) => {
-    await File.findByIdAndDelete(req.params.fileId);
+    const gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection('uploads');
+    const fileToDelete = await gfs.files.findOne({ filename: req.file.fileId });
+    console.log(fileToDelete);
+    const gsfb = new mongoose.mongo.GridFSBucket(conn.db, { bucketName: 'uploads' });
+    gsfb.delete(fileToDelete._id, function (err, gridStore) {
+        if (err) return next(err);
+    });
+    await File.findByIdAndDelete(req.file._id);
     return res.status(202).json({ message: 'File removed' });
 };
 
-const createFile = async (req) => {
+const createFile = async (req, res) => {
     console.log('je suis là');
     await File.create({
         userId: req.user.userId, // req.params.userId,
@@ -25,6 +36,7 @@ const createFile = async (req) => {
         fileSize: req.file.size,
         fileExtension: req.file.contentType,
     });
+    return res.status(201).json({ message: 'File uploaded'});
 };
 
 module.exports.getFiles = getFiles;

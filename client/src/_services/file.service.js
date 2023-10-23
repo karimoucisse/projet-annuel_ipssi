@@ -18,6 +18,14 @@ let getFileById = (fileId) => {
     return Axios.get('/file/files/'+fileId);
 }
 
+let deleteFile = (fileId) => {
+    return Axios.delete('/file/'+fileId);
+}
+
 export const fileService = {
-    getAllFiles, uploadFile, displayFile, getFileById
+    getAllFiles,
+    uploadFile,
+    displayFile,
+    getFileById,
+    deleteFile
 }
