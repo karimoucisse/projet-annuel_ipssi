@@ -32,6 +32,14 @@ router.get('/files', authorization, async (req, res, next) => {
     }
 });
 
+router.get('/search/:userId', authorization, async (req, res, next) => {
+    try {
+        await fileController.searchFiles(req, res, next);
+    } catch (error) {
+        next(error);
+    }
+});
+
 // router.delete(
 //    '/:fileId',
 //    authorization,

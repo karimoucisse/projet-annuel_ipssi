@@ -182,6 +182,18 @@ const login = async (req, res) => {
     res.status(200).json(dataToSend);
 };
 
+const deleteFiles = async (gfs, files) => {
+    files.map(
+    async (file) => {
+        const fileToDelete = await gfs.files.findOne({ filename: file.fileId });
+        console.log(fileToDelete);
+        const gsfb = new mongoose.mongo.GridFSBucket(conn.db, { bucketName: 'uploads' });
+        gsfb.delete(fileToDelete._id, function (err, gridStore) {
+            if (err) return next(err);
+        });
+    });
+}
+
 const deleteUser = async (req, res) => {
     try {
         const gfs = Grid(conn.db, mongoose.mongo);
@@ -189,42 +201,26 @@ const deleteUser = async (req, res) => {
         const files = await File.find({ userId: req.user.userId });
 
         if (files) {
-            const deletePromises = files.map(
-                async (file) =>
-                    new Promise((resolve, reject) => {
-                        gfs.files.findOne(
-                            { filename: file.fileId },
-                            async (err, fileToDelete) => {
-                                if (err) {
-                                    return reject(err);
-                                }
-                                await gfs.delete(fileToDelete._id, () => {
-                                    resolve();
-                                });
-                            }
-                        );
-                    })
-            );
-
-            await Promise.all(deletePromises);
-
+            await deleteFiles(gfs, files);
             const filesDeleted = await File.deleteMany({
                 userId: req.user.userId,
             });
-            console.log(filesDeleted);
-        }
+            console.log(filesDeleted); // TODO: Utiliser filesDeleted.deletedCount pour connaitre le nombre de fichiers supprimés
+        }                               // Utiliser filesDeletedCount dans les mails à envoyer
 
         await Address.findOneAndDelete({ userId: req.user.userId });
         await Basket.findOneAndDelete({ userId: req.user.userId });
         await Subscription.deleteMany({ userId: req.user.userId });
         const user = await User.findByIdAndDelete(req.user.userId);
-
+        console.log(user);
+        // TODO: Utiliser user.firstname + user.lastname dans les emails à envoyer
+        // TODO: Reactiver l'API email
         await sendEmail(
-            'cherif.bellahouel@hotmail.com',
+            user.email,
             accountDeletedTemplate
         );
         await sendEmail(
-            'cherif.bellahouel@hotmail.com',
+            adminEmail, // TODO: Creer email admin
             accountDeletedAdminTemplate
         );
 
