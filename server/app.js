@@ -15,7 +15,7 @@ const Basket = require('./models/basket.model');
 const sendEmail = require('./services/sendInBlue/sendEmail');
 const confirmPaymentTemplate = require('./services/sendInBlue/templates/confirmPayment.template');
 
-const { PORT } = process.env || 3000;
+const { PORT } = process.env || 5000;
 
 const app = express();
 const corsOptions = {
@@ -96,7 +96,7 @@ app.use('/file', fileRouter);
 app.use('/admin', adminRouter);
 app.use('/stripe', stripeService);
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     res.status(500).json({ status: 'error', message: err });
 });
 

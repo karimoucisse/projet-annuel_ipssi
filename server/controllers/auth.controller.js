@@ -116,12 +116,14 @@ const signup = async (req, res) => {
     }
 
     res.status(201).json({
-        message: 'user created',
+        message: 'User created',
         user: {
-            id: ans._id,
-            email,
+            id: newUser._id,
+            email: newUser.email,
         },
     });
+    // Redirection vers la page /login
+    res.redirect('/login');
 };
 
 const addStorage = async (req, res) => {
@@ -144,6 +146,7 @@ const addStorage = async (req, res) => {
 };
 
 const getStorage = async (req, res) => {
+<<<<<<< HEAD
     try {
         const storage = await Subscription.find({ userId: req.user.userId });
         const sumStorage = storage.reduce((acc, curr) => acc + curr.storage, 0);
@@ -152,6 +155,11 @@ const getStorage = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
+=======
+    const storage = await Subscription.find({ userId: req.user.userId });
+    const sumStorage = storage.reduce((acc, curr) => console.log(acc), 0); // TODO: REVOIR CA
+    return res.status(200).json({ message: 'sum' });
+>>>>>>> f69f19c643f46b4b7d9666f4d619e6b27e1a2179
 };
 // const getInvoice = async (req, res) => {
 //     try {
@@ -169,29 +177,33 @@ const getStorage = async (req, res) => {
 // };
 
 const login = async (req, res) => {
-    if (!('email' in req.body && 'password' in req.body)) {
+    if (!req.body.email || !req.body.password) {
         return res
             .status(422)
             .json({ message: 'need 2 keys : email, password' });
     }
+
     const { email, password } = req.body;
     const foundUser = await User.findOne({ email });
     if (!foundUser) {
         return res.status(409).json({ message: 'wrong email or password' });
     }
+
     const isValid = await bcrypt.compare(password, foundUser.password);
     if (!isValid) {
         return res.status(409).json({ message: 'wrong email or password' });
     }
+
     const dataToSend = {
         userId: foundUser._id.toString(),
         isActive: foundUser.active,
         token: jwt.sign(
-            { userId: foundUser._id.toString(), email: foundUser.email },
-            process.env.TOKEN_SECRET,
             {
-                expiresIn: '10h',
-            }
+                userId: foundUser._id.toString(),
+                email: foundUser.email,
+            },
+            process.env.TOKEN_SECRET,
+            { expiresIn: '10h' }
         ),
     };
     res.status(200).json(dataToSend);
@@ -200,6 +212,28 @@ const login = async (req, res) => {
 const deleteFilesForUser = (userId) => {
     const gfs = Grid(conn.db, mongoose.mongo);
     gfs.collection('uploads');
+<<<<<<< HEAD
+=======
+    const files = await File.find({ userId: req.user.userId });
+    console.log(files);
+    if (files) {
+        files.map(async (file) => {
+            const fileToDelete = await gfs.files.findOne({
+                filename: file.fileId,
+            });
+            const gsfb = new mongoose.mongo.GridFSBucket(conn.db, {
+                bucketName: 'uploads',
+            });
+            await gsfb.delete(fileToDelete._id, (err, gridStore) => {
+                if (err) {
+                    return res.status(404).json({ err });
+                }
+            });
+        });
+        const filesDeleted = await File.deleteMany({ userId: req.user.userId });
+        console.log(filesDeleted);
+    }
+>>>>>>> f69f19c643f46b4b7d9666f4d619e6b27e1a2179
 
     File.find({ userId }).then((files) => {
         if (files) {

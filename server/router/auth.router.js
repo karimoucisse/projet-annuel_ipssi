@@ -66,6 +66,15 @@ router.get('/userinfo/:userId', async (req, res, next) => {
     try {
         await authController.getUserInfoById(req, res, next);
     } catch (error) {
+        console.error(error);
+    }
+});
+// Route pour l'achat d'espace de stockage supplémentaire
+router.post('/purchase-space', authorization, async (req, res, next) => {
+    try {
+        const user = await authController.purchaseSpace(req.user.userId);
+        res.status(200).json(user);
+    } catch (error) {
         next(error);
     }
 });

@@ -20,7 +20,7 @@ const Details = () => {
     const [file, setFile] = useState([]);
     const flag = useRef(false);
     const { fileId } = useParams();
-    const BASE_URL = 'http://localhost:3000/';
+    const BASE_URL = 'http://localhost:5000/';
 
     useEffect(() => {
         if (flag.current === false) {

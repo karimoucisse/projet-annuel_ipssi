@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Bubbles from './components/Bubbles';
 import Router from './router/router';
 
@@ -11,5 +12,18 @@ export default function App() {
     <Bubbles />
     <Router />
   </>
+=======
+// import Router from './router/router';
+import Bubbles from './components/Bubbles';
+import Router from './routes/Router';
+function App() {
+  return (
+    <>
+      {/* <Bubbles /> */}
+      <Router />
+    </>
+>>>>>>> f69f19c643f46b4b7d9666f4d619e6b27e1a2179
   )
 }
+
+export default App;

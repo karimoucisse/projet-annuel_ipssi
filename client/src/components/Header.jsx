@@ -10,8 +10,11 @@ import {
 } from '@mui/material';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import PersonIcon from '@mui/icons-material/Person';
+<<<<<<< HEAD
 import { accountService } from "../_services/account.service";
 
+=======
+>>>>>>> f69f19c643f46b4b7d9666f4d619e6b27e1a2179
 
 const Header = () => {
   const currentLocation = window.location.pathname;
@@ -22,15 +25,22 @@ const Header = () => {
     },
     {
       text: 'Stockage',
+<<<<<<< HEAD
       link: 'storage',
+=======
+      link: 'stockage',
+>>>>>>> f69f19c643f46b4b7d9666f4d619e6b27e1a2179
     },
     {
       text: 'Support',
       link: 'support',
     },
   ];
+<<<<<<< HEAD
   if (!accountService.isLogged()
   ) return
+=======
+>>>>>>> f69f19c643f46b4b7d9666f4d619e6b27e1a2179
 
   return (
     <Box

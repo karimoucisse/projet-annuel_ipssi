@@ -19,8 +19,13 @@ const Bubbles = () => {
             const radius = Math.random() * (maxRadius - minRadius) + minRadius;
             const x = Math.random() * canvas.width;
             const y = Math.random() * canvas.height;
+<<<<<<< HEAD
             const dx = (Math.random() - 0.5) * 1;
             const dy = (Math.random() - 0.5) * 1;
+=======
+            const dx = (Math.random() - 0.5) * 7;
+            const dy = (Math.random() - 0.5) * 7;
+>>>>>>> f69f19c643f46b4b7d9666f4d619e6b27e1a2179
 
             // Choix de la couleur aléatoirement entre '#FADF8B' : '#1C2930'
             const color = Math.random() < 0.5 ? '#FADF8B' : '#1C2930';

@@ -1,5 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
 import { Container, Typography, Button, Link } from '@mui/material';
 
 const styles = {
@@ -57,11 +56,6 @@ const NoMatch = () => {
       </Button>
     </Container>
   );
-=======
-
-const NoMatch = () => {
-  return <div>NoMatch</div>;
->>>>>>> f69f19c643f46b4b7d9666f4d619e6b27e1a2179
 };
 
 export default NoMatch;

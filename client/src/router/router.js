@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import NoMatch from './NoMatch';
-import Container from '../layouts/container';
+import Container from '../layouts/Container';
 import Main from '../pages/main';
 import AuthRouter from '../pages/auth/authRouter';
 import AuthGuard from '../_helpers/authGuard';
@@ -15,6 +15,7 @@ import MyDocument from '../pages/profile/storage';
 const Routeur = () => {
   return (
     <BrowserRouter>
+<<<<<<< HEAD
       <Container>
         <Routes>
           <Route path={"/"} element={
@@ -23,19 +24,41 @@ const Routeur = () => {
             </AuthGuard>
           } />
           <Route path={"/details/:fileId"} element={
+=======
+      {/* <Container> */}
+      <Routes>
+        <Route
+          path={'/'}
+          element={
+            <AuthGuard>
+              <Main />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path={'/details/:fileId'}
+          element={
+>>>>>>> f69f19c643f46b4b7d9666f4d619e6b27e1a2179
             <AuthGuard>
               <Details />
             </AuthGuard>
-          } />
-          <Route path="/admin/*" element={
+          }
+        />
+        <Route
+          path="/admin/*"
+          element={
             <AuthGuard>
               <UserList />
             </AuthGuard>
-          } />
-          <Route path="/profile/" element={
+          }
+        />
+        <Route
+          path="/profile/"
+          element={
             <AuthGuard>
               <Profile />
             </AuthGuard>
+<<<<<<< HEAD
           } />
           <Route path="/storage/" element={
             <AuthGuard>
@@ -45,13 +68,23 @@ const Routeur = () => {
           <Route path="/checkout-success" element={<CheckoutSuccess />} />
           <Route path="/checkout-failed" element={<CheckoutFailed />} />
           <Route path="/auth/*" element={
+=======
+          }
+        />
+        <Route path="/checkout-success" element={<CheckoutSuccess />} />
+        <Route path="/checkout-failed" element={<CheckoutFailed />} />
+        <Route
+          path="/auth/*"
+          element={
+>>>>>>> f69f19c643f46b4b7d9666f4d619e6b27e1a2179
             <VisitorGuard>
               <AuthRouter />
             </VisitorGuard>
-          } />
-          <Route path="*" element={<NoMatch />} />
-        </Routes>
-      </Container>
+          }
+        />
+        <Route path="*" element={<NoMatch />} />
+      </Routes>
+      {/* </Container> */}
     </BrowserRouter>
   );
 };
