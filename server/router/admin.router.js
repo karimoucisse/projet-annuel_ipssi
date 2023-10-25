@@ -19,7 +19,8 @@ router.get('/user/:userId', authorization, async (req, res, next) => {
     }
 });
 
-router.get('/statistics', authorization, async (req, res, next) => { // TODO: REMETTRE ISADMIN MIDDLEWARE
+router.get('/statistics', authorization, async (req, res, next) => {
+    // TODO: REMETTRE ISADMIN MIDDLEWARE
     try {
         await adminController.getStatistics(req, res);
     } catch (error) {

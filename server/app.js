@@ -64,15 +64,20 @@ app.post(
                     if (!user.active) {
                         await User.findByIdAndUpdate(userId, { active: true });
                     }
-                    const alreadySubscription = await Subscription.findOne({ userId });
-                    if(alreadySubscription){
-                        await Subscription.findOneAndUpdate({
-                            userId
-                        },
-                        {
-                            storage: Number(alreadySubscription.storage) + 1,
-                            price: Number(alreadySubscription.price) + 2000
-                        });
+                    const alreadySubscription = await Subscription.findOne({
+                        userId,
+                    });
+                    if (alreadySubscription) {
+                        await Subscription.findOneAndUpdate(
+                            {
+                                userId,
+                            },
+                            {
+                                storage:
+                                    Number(alreadySubscription.storage) + 1,
+                                price: Number(alreadySubscription.price) + 2000,
+                            }
+                        );
                     } else {
                         await Subscription.create({
                             userId,
@@ -85,12 +90,14 @@ app.post(
                     await Invoice.create({
                         userId,
                         quantity: 1,
-                        designation: (alreadySubscription) ? 'Adding storage' : 'Subscription to ArchiConnect'
+                        designation: alreadySubscription
+                            ? 'Adding storage'
+                            : 'Subscription to ArchiConnect',
                     });
-                    //await sendEmail(
+                    // await sendEmail(
                     //    user.email,
                     //    confirmPaymentTemplate
-                    //);
+                    // );
                     // await sendSMS('33624864608');
                 } else {
                     console.error('il y a un problème'); // TODO: Renvoyer message d'erreur

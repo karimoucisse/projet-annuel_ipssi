@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { accountService } from '../../_services/account.service';
 
@@ -8,24 +8,14 @@ import {
     Stack,
     TextField,
     Button,
-    Fade,
-    InputAdornment,
-    useTheme,
     Typography,
-    Checkbox,
     Link,
-    LinearProgress,
-    CircularProgress,
-    Container,
-    Avatar,
 } from '@mui/material';
 // formik
 import { Formik, Form, Field } from 'formik';
 // yup
 import * as Yup from 'yup';
 // mui icons
-import GoogleIcon from '@mui/icons-material/Google';
-import FacebookOutlinedIcon from '@mui/icons-material/FacebookOutlined';
 import ArchiConnectContainer from './ArchiConnectContainer';
 
 const Login = () => {

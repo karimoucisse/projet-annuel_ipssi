@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Typography, Paper, Grid, Box } from '@mui/material';
+import { Button, Typography, Paper, Box } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CloudDoneIcon from '@mui/icons-material/CloudDone';
 
@@ -47,9 +47,9 @@ const FileUpload = ({ onUpload }) => {
                 background: 'rgba(255, 255, 255, 0.2)',
                 backdropFilter: "blur(10px)",
                 borderRadius: "20px",
-                border: `3px dashed ${fileUploaded ? 'green' : '#fff'}`,
+                border: `3px dashed ${fileUploaded ? 'green' : '#FADF8B'}`,
                 transition: 'border .3s',
-                width: "100%",
+                width: "80%",
                 marginBlock: "20px",
                 boxShadow: "none"
             }}

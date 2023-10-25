@@ -1,7 +1,7 @@
+const PdfMake = require('pdfmake');
 const Invoice = require('../models/invoice.model');
 const User = require('../models/user.model');
 const Address = require('../models/address.model');
-const PdfMake = require('pdfmake');
 
 const getInvoices = async (req, res) => {
     const invoices = await Invoice.find({ userId: req.user.userId });
@@ -10,20 +10,20 @@ const getInvoices = async (req, res) => {
 
 const generatePDF = async (req, res) => {
     const invoiceData = await Invoice.findById(req.params.invoiceId);
-    if(!invoiceData){
+    if (!invoiceData) {
         return res.status(400).json({ error: 'Invoice not in database' });
     }
     const user = await User.findById(req.user.userId);
-    const address = await Address.findOne({ userId : req.user.userId });
+    const address = await Address.findOne({ userId: req.user.userId });
 
     const fonts = {
         Helvetica: {
             normal: 'Helvetica',
             bold: 'Helvetica-Bold',
             italics: 'Helvetica-Oblique',
-            bolditalics: 'Helvetica-BoldOblique'
-        }
-    }
+            bolditalics: 'Helvetica-BoldOblique',
+        },
+    };
     const printer = new PdfMake(fonts);
     const docDefinition = {
         content: [
@@ -42,26 +42,27 @@ const generatePDF = async (req, res) => {
             Description
             Designation: ${invoiceData.designation}
             Prix à l'unité: ${invoiceData.unitPrice}
-            Quantité: ${invoiceData.quantity}`
+            Quantité: ${invoiceData.quantity}`,
         ], // TODO: METTRE TAXE
         defaultStyle: {
-            font: 'Helvetica'
-        }
+            font: 'Helvetica',
+        },
     };
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
-    
-    const binaryResult = await new Promise((resolve, reject) =>{ 
-    try {
-        let chunks = [];
-        pdfDoc.on('data', chunk => chunks.push(chunk));
-        pdfDoc.on('end', () => resolve(Buffer.concat(chunks)));
-        pdfDoc.end();
-    } catch(err) {
-        reject(err);
-    }});
+
+    const binaryResult = await new Promise((resolve, reject) => {
+        try {
+            const chunks = [];
+            pdfDoc.on('data', (chunk) => chunks.push(chunk));
+            pdfDoc.on('end', () => resolve(Buffer.concat(chunks)));
+            pdfDoc.end();
+        } catch (err) {
+            reject(err);
+        }
+    });
 
     res.contentType('application/pdf').send(binaryResult);
-}
+};
 
 module.exports.getInvoices = getInvoices;
 module.exports.generatePDF = generatePDF;
