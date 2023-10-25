@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { fileService } from '../_services/file.service';
 import { useParams } from "react-router-dom";
 import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import FilePreview from "../components/details/FilePreview";
 
 // Create styles
 const styles = StyleSheet.create({
@@ -22,14 +23,18 @@ const Details = () => {
     const { fileId } = useParams();
     const BASE_URL = 'http://localhost:3000/';
 
+    const fetchData = async () => {
+      await fileService.getFileById(fileId)
+        .then(res => {
+          console.log(res.data);
+          setFile(res.data);
+        })
+        .catch(err => console.log(err));
+    }
+
     useEffect(() => {
         if (flag.current === false) {
-            fileService.getFileById(fileId)
-                .then(res => {
-                    console.log(res.data);
-                    setFile(res.data);
-                })
-                .catch(err => console.log(err));
+          fetchData();
         }
 
         return () => flag.current = true;
@@ -40,7 +45,7 @@ const Details = () => {
             <small>Fichier uploadé le {file.createdAt}</small>
             <h3>{file.name}</h3>
             <p>Fichier du type: {file.fileExtension}</p>
-            <img src={BASE_URL + 'file/stream/' + file.fileId} alt={file.name} />
+            <FilePreview file={file} fileUrl={BASE_URL + 'file/stream/' + file.fileId} />
         </div>
     );
 };
