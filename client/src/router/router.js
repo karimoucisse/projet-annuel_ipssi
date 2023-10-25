@@ -11,6 +11,7 @@ import CheckoutFailed from '../pages/stripe/checkoutFailed';
 import VisitorGuard from '../_helpers/visitorGuard';
 import MyDocument from '../pages/profile/storage';
 import ProfileRouter from '../pages/profile/profileRouter';
+import LegalInformation from '../pages/InformationsLegal';
 
 const Routeur = () => {
   return (
@@ -42,6 +43,7 @@ const Routeur = () => {
               <MyDocument />
             </AuthGuard>
           } />
+          <Route path="/informations-legales" element={<LegalInformation />} />
           <Route path="/checkout-success" element={<CheckoutSuccess />} />
           <Route path="/checkout-failed" element={<CheckoutFailed />} />
           <Route path="/auth/*" element={

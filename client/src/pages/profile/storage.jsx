@@ -1,39 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
-import { accountService } from '../../_services/account.service';
+import { Container, Typography, Box } from '@mui/material';
 import StorageIcon from '@mui/icons-material/Storage';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PaidIcon from '@mui/icons-material/Paid';
-import { Link } from 'react-router-dom';
-import PDFViewerButton from './invoiceList';
-// TODO à modifier
-// Create styles
-const styles = StyleSheet.create({
-    page: {
-        flexDirection: 'row',
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
-        backdropFilter: 'blur(50px)', // Flou
-        margin: 20,
-        display: 'flex',
-    },
-    section: {
-        width: 200,
-        padding: 20,
-        flexGrow: 1,
-        display: 'flex',
-        alignItems: 'center',
-    },
-    icon: {
-        fontSize: 24,
-        marginRight: 8,
-    },
-    text: {
-        marginRight: 5
-    }
-});
+import { accountService } from '../../_services/account.service';
 
-// Create Document Component
-const MyDocument = () => {
+const Storage = () => {
     const [userStorage, setUserStorage] = useState(null);
     const [invoiceDate, setInvoiceDate] = useState(null);
 
@@ -61,27 +33,24 @@ const MyDocument = () => {
     }, [invoiceDate]);
 
     return (
-        <Document>
-            <Page size="A4" style={styles.page}>
-                <View style={styles.section}>
-                    <CalendarMonthIcon style={styles.icon} />
-                    <Text style={styles.text}>Date :</Text>
-                    <Text>{invoiceDate}</Text>
-                </View>
-                <View style={styles.section}>
-                    <StorageIcon style={styles.icon} />
-                    <Text style={styles.text}>Espace de stockage total :</Text>
-                    <Text>{userStorage && userStorage.sum * 20}Go</Text>
-                </View>
-                <View style={styles.section}>
-                    <PaidIcon style={styles.icon} />
-                    <Text style={styles.text}>Prix total :</Text>
-                    <Text>{userStorage && userStorage.storage[0].price / 100 * userStorage.sum} €</Text>
-                </View>
-                <PDFViewerButton />
-            </Page>
-        </Document>
+        <Container maxWidth="md" style={{ padding: '16px', margin: '20px', backdropFilter: 'blur(10px)', backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: '10px' }}>
+            <Box display="flex" alignItems="center">
+                <CalendarMonthIcon sx={{ fontSize: 24, marginRight: 1 }} />
+                <Typography variant="body1">Date :</Typography>
+                <Typography>{invoiceDate}</Typography>
+            </Box>
+            <Box display="flex" alignItems="center">
+                <StorageIcon sx={{ fontSize: 24, marginRight: 1 }} />
+                <Typography variant="body1">Espace de stockage total :</Typography>
+                <Typography>{userStorage && userStorage.sum * 20}Go</Typography>
+            </Box>
+            <Box display="flex" alignItems="center">
+                <PaidIcon sx={{ fontSize: 24, marginRight: 1 }} />
+                <Typography variant="body1">Prix total :</Typography>
+                <Typography>{userStorage && userStorage.storage[0].price / 100 * userStorage.sum} €</Typography>
+            </Box>
+        </Container>
     );
 };
 
-export default MyDocument;
+export default Storage;

@@ -20,11 +20,11 @@ const styles = {
         textAlign: 'center',
     },
     errorIcon: {
-        fontSize: 80,
-        color: 'red', // Couleur d'erreur
-    },
-    text: {
-        marginRight: '40px',
+        fontSize: 50,
+        color: '#1c2930',
+        verticalAlign: 'middle',
+        marginLeft: '12px',
+        paddingBottom: '12px'
     },
 };
 
@@ -33,8 +33,8 @@ const CheckoutFailed = () => {
         <Container maxWidth="sm" sx={styles.container}>
             <Box sx={styles.content}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography variant="h4" component="h1" gutterBottom sx={styles.text}>
-                        Erreur
+                    <Typography variant="h4" component="h1" gutterBottom>
+                        Erreur lors du règlement
                     </Typography>
                     <ErrorIcon sx={styles.errorIcon} />
                 </Box>
@@ -43,11 +43,11 @@ const CheckoutFailed = () => {
                 </Typography>
                 <Button
                     component={Link}
-                    to="/"
+                    to="/auth/signup"
                     variant="contained"
                     color="primary"
                 >
-                    Retour à l'accueil
+                    Retour à l'inscription
                 </Button>
             </Box>
         </Container>

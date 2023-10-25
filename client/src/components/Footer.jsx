@@ -110,13 +110,13 @@ const Footer = () => {
             <Grid item xs={12} md={6} lg={4}>
               <Stack spacing={2}>
                 <Typography variant="h6">Informations légales</Typography>
-                <Link href="/mentions-legales" color="inherit" variant="body1">
+                <Link href="/informations-legales" color="inherit" variant="body1">
                   Mentions légales
                 </Link>
-                <Link href="/politique-confidentialite" color="inherit" variant="body1">
+                <Link href="/informations-legales" color="inherit" variant="body1">
                   Politique de confidentialité
                 </Link>
-                <Link href="/conditions-utilisation" color="inherit" variant="body1">
+                <Link href="/informations-legales" color="inherit" variant="body1">
                   Conditions d'utilisation
                 </Link>
               </Stack>

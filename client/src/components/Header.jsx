@@ -1,17 +1,9 @@
 import React from 'react';
-import {
-  Avatar,
-  Box,
-  Chip,
-  Container,
-  Link,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Avatar, Box, Chip, Container, Link, Stack, Typography } from '@mui/material';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import PersonIcon from '@mui/icons-material/Person';
 import { accountService } from "../_services/account.service";
-
+import { Link as RouterLink } from 'react-router-dom'; // Importez Link de react-router-dom
 
 const Header = () => {
   const currentLocation = window.location.pathname;
@@ -29,16 +21,16 @@ const Header = () => {
       link: 'support',
     },
   ];
-  if (!accountService.isLogged()
-  ) return
+
+  if (!accountService.isLogged()) return null; // Renvoyez null si l'utilisateur n'est pas connecté
 
   return (
     <Box
       sx={{
-        backgroundColor: 'white', // Arrière-plan blanc pour tout le header
+        backgroundColor: 'white',
         height: '70px',
         px: '100px',
-        color: '#1C2930', // Texte en #1C2930
+        color: '#1C2930',
         display: 'flex',
         alignItems: 'center',
       }}
@@ -51,8 +43,8 @@ const Header = () => {
               display: 'flex',
               alignItems: 'center',
               gap: 1,
-              fontFamily: 'cursive', // Police
-              fontWeight: 'bold',   // Gras
+              fontFamily: 'cursive',
+              fontWeight: 'bold',
             }}
           >
             <ApartmentIcon /> ArchiConnect
@@ -64,27 +56,28 @@ const Header = () => {
         spacing={4}
         sx={{
           flex: 2,
-          color: '#1C2930', // Texte en #1C2930
+          color: '#1C2930',
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
         {linkList.map((item, i) => (
           <Link
-            href={`/${item.link}`}
+            component={RouterLink} // Utilisez le composant RouterLink pour créer un lien
+            to={`/${item.link}`} // Utilisez "to" au lieu de "href"
             color="inherit"
             key={i}
             sx={{
               backgroundColor:
                 (currentLocation.includes(item.link) && item.link.length > 1) ||
                   (currentLocation === '/' && item.text === 'Accueil')
-                  ? '#1C2930' // Couleur de fond lorsque la condition est vraie
-                  : '#F3F3F3', // Couleur de fond lorsque la condition est fausse
+                  ? '#1C2930'
+                  : '#F3F3F3',
               color:
                 (currentLocation.includes(item.link) && item.link.length > 1) ||
                   (currentLocation === '/' && item.text === 'Accueil')
-                  ? 'white' // Couleur du texte lorsque la condition est vraie
-                  : '#1C2930', // Couleur du texte lorsque la condition est fausse
+                  ? 'white'
+                  : '#1C2930',
               padding: '8px 16px',
               borderRadius: '4px',
               textDecoration: 'none',
@@ -99,12 +92,14 @@ const Header = () => {
         ))}
       </Stack>
       <Box flex={1} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Chip
-          label="Compte"
-          avatar={<Avatar><PersonIcon /></Avatar>}
-          sx={{ color: '#1C2930', cursor: 'pointer' }} // Texte en #1C2930
-          size="medium"
-        />
+        <Link to="/profile" component={RouterLink}> {/* Ajoutez un lien vers /profile */}
+          <Chip
+            label="Compte"
+            avatar={<Avatar><PersonIcon /></Avatar>}
+            sx={{ color: '#1C2930', cursor: 'pointer' }}
+            size="medium"
+          />
+        </Link>
       </Box>
     </Box>
   );

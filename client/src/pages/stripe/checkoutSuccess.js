@@ -20,11 +20,11 @@ const styles = {
         textAlign: 'center',
     },
     checkIcon: {
-        fontSize: 80,
+        fontSize: 50,
         color: '#1c2930',
-    },
-    text: {
-        marginRight: '40px',
+        verticalAlign: 'middle',
+        marginLeft: '12px',
+        paddingBottom: '12px'
     },
 };
 

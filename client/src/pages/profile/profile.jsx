@@ -7,7 +7,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from "react-router-dom";
 import { accountService } from "../../_services/account.service";
 import { userService } from "../../_services/user.service";
-import InvoiceList from './invoiceList'; // Assurez-vous que le chemin du fichier est correct
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -15,10 +14,6 @@ const Profile = () => {
     const [isEditing, setEditing] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
     const [editedUserInfo, setEditedUserInfo] = useState({});
-    const [invoices, setInvoices] = useState([]); // Ajoutez le state pour stocker les factures
-
-
-
 
     const fetchUserInfo = async () => {
         try {
@@ -34,38 +29,26 @@ const Profile = () => {
     useEffect(() => {
         fetchUserInfo();
     }, []);
-    const containerRef = useRef(null);
 
-    const fetchInvoices = async () => {
-        try {
-            const response = await accountService.getInvoice(); // Appel de la fonction pour récupérer les factures
-            setInvoices(response.data); // Mettez à jour le state avec les factures récupérées
-        } catch (error) {
-            console.error("Erreur lors de la récupération des factures:", error);
-        }
-    };
+    // const containerRef = useRef(null);
 
-    useEffect(() => {
-        fetchInvoices(); // Appel de la fonction pour récupérer les factures lors du chargement de la page
-    }, []);
+    // // désactiver le mode d'édition
+    // useEffect(() => {
+    //     const handleClickOutside = (event) => {
+    //         if (
+    //             containerRef.current &&
+    //             !containerRef.current.contains(event.target)
+    //         ) {
+    //             setEditing(false);
+    //         }
+    //     };
 
-    // désactiver le mode d'édition
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (
-                containerRef.current &&
-                !containerRef.current.contains(event.target)
-            ) {
-                setEditing(false);
-            }
-        };
+    //     document.addEventListener("click", handleClickOutside);
 
-        document.addEventListener("click", handleClickOutside);
-
-        return () => {
-            document.removeEventListener("click", handleClickOutside);
-        };
-    }, []);
+    //     return () => {
+    //         document.removeEventListener("click", handleClickOutside);
+    //     };
+    // }, []);
 
     const handleDeleteClick = () => {
         setDeleteDialogOpen(true);
@@ -123,11 +106,13 @@ const Profile = () => {
     };
 
     const containerStyle = {
-        background: "rgba(255, 255, 255, 0.9)",
+        backgroundColor: "rgba(255, 255, 255, 0.2)",
         borderRadius: "10px",
         padding: "16px",
-        marginBlock: 50
+        marginBlock: "50px",
+        backdropFilter: "blur(10px)",
     };
+
     const titleStyle = {
         color: "#1C2930",
         textAlign: "center",
@@ -175,8 +160,7 @@ const Profile = () => {
     };
 
     return (
-        <Container maxWidth="md" style={containerStyle} ref={containerRef}>
-            <InvoiceList />
+        <Container maxWidth="md" style={containerStyle}>
             <Box mt={2}>
                 <Button
                     variant="contained"
@@ -232,6 +216,19 @@ const Profile = () => {
                                         fullWidth
                                         style={textFieldStyle}
                                     />
+
+
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography variant="h6" style={typographyStyle}>Adresse</Typography>
+                                    <TextField
+                                        label="Numéro"
+                                        name="number"
+                                        value={editedUserInfo.number}
+                                        onChange={handleChange}
+                                        fullWidth
+                                        style={textFieldStyle}
+                                    />
                                     <Select
                                         label="Type de voie"
                                         name="wayType"
@@ -245,17 +242,6 @@ const Profile = () => {
                                         <MenuItem value={2}>Avenue</MenuItem>
                                         <MenuItem value={3}>Boulevard</MenuItem>
                                     </Select>
-                                    <TextField
-                                        label="Numéro"
-                                        name="number"
-                                        value={editedUserInfo.number}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        style={textFieldStyle}
-                                    />
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Typography variant="h6" style={typographyStyle}>Adresse</Typography>
                                     <TextField
                                         label="Nom de l'adresse"
                                         name="addressName"
