@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Box,
   Container,
@@ -6,39 +6,41 @@ import {
   Link,
   Stack,
   Typography,
-} from '@mui/material';
-import PhoneIcon from '@mui/icons-material/Phone';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import RoomIcon from '@mui/icons-material/Room';
+  useTheme,
+} from "@mui/material";
+import PhoneIcon from "@mui/icons-material/Phone";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import RoomIcon from "@mui/icons-material/Room";
 
 const styles = {
   footerContainer: {
-    backgroundColor: '#1c2930',
-    color: 'white',
+    backgroundColor: "#1c2930",
+    color: "white",
     py: 3,
     bottom: 0,
-    width: '100%',
+    width: "100%",
   },
   column: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
   },
   columnWrapper: {
-    display: 'flex',
-    flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row",
   },
   columnWithMargin: {
-    marginRight: '50px',
+    marginRight: "50px",
   },
 };
 
 const Footer = () => {
+  const theme = useTheme();
   return (
     <div style={styles.footerContainer}>
       <Box
         sx={{
-          backgroundColor: '#1c2930',
-          color: 'white',
+          backgroundColor: theme.palette.primary.main,
+          color: "white",
           py: 3,
         }}
       >
@@ -94,7 +96,9 @@ const Footer = () => {
                 <Box display="flex" alignItems="center">
                   <MailOutlineIcon />
                   <Typography variant="body1" sx={{ ml: 1 }}>
-                    <a href="mailto:archiConnect@gmail.com">archiConnect@gmail.com</a>
+                    <a href="mailto:archiConnect@gmail.com">
+                      archiConnect@gmail.com
+                    </a>
                   </Typography>
                 </Box>
                 <Box display="flex" alignItems="center">
@@ -109,13 +113,25 @@ const Footer = () => {
             <Grid item xs={12} md={6} lg={4}>
               <Stack spacing={2}>
                 <Typography variant="h6">Informations légales</Typography>
-                <Link href="/informations-legales" color="inherit" variant="body1">
+                <Link
+                  href="/informations-legales"
+                  color="inherit"
+                  variant="body1"
+                >
                   Mentions légales
                 </Link>
-                <Link href="/informations-legales" color="inherit" variant="body1">
+                <Link
+                  href="/informations-legales"
+                  color="inherit"
+                  variant="body1"
+                >
                   Politique de confidentialité
                 </Link>
-                <Link href="/informations-legales" color="inherit" variant="body1">
+                <Link
+                  href="/informations-legales"
+                  color="inherit"
+                  variant="body1"
+                >
                   Conditions d'utilisation
                 </Link>
               </Stack>
@@ -130,7 +146,6 @@ const Footer = () => {
         </Container>
       </Box>
     </div>
-
   );
 };
 

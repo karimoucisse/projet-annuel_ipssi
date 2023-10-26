@@ -1,7 +1,8 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 
 const ArchiConnectContainer = () => {
+  const theme = useTheme();
   return (
     <Box
       flex={0.9}
@@ -12,7 +13,7 @@ const ArchiConnectContainer = () => {
         justifyContent: "center",
         padding: 4,
         gap: 3,
-        backgroundColor: "#1c2930",
+        backgroundColor: theme.palette.primary.main,
         color: "white",
       }}
     >
