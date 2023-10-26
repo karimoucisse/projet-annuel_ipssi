@@ -22,10 +22,15 @@ let deleteFile = (fileId) => {
     return Axios.delete('/file/'+fileId);
 }
 
+let downloadFile = (fileId) => {
+    return Axios.get('/file/download/'+fileId);
+}
+
 export const fileService = {
     getAllFiles,
     uploadFile,
     displayFile,
     getFileById,
-    deleteFile
+    deleteFile,
+    downloadFile
 }

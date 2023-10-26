@@ -96,10 +96,43 @@ router.get('/stream/:filename', openConnection, async (req, res, next) => {
     }
     // Check if image
     //if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
-    if(file){
+    if (file) {
         // Read output to browser
         const readStream = gridfsBucket.openDownloadStream(file._id);
         readStream.pipe(res);
+    } else {
+        res.status(404).json({
+            err: 'Not an image',
+        });
+    }
+});
+
+router.get('/download/:filename', openConnection, async (req, res, next) => {
+    // TODO: Faille de sécurité, on ne vérifie pas si le fichier provient bien de cet utilisateur connecté, dans tous les cas, il faut une autorisation pour afficher le fichier
+    const gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection('uploads');
+    const gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
+        bucketName: 'uploads',
+    });
+    const file = await gfs.files.findOne({ filename: req.params.filename });
+    if (!file || file.length === 0) {
+        return res.status(404).json({
+            err: 'No file exists',
+        });
+    }
+    // Check if image
+    //if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
+    if (file) {
+        // Read output to browser
+        const readStream = gridfsBucket.openDownloadStream(file._id);
+        let base64;
+        readStream.on('data', (data) => {
+            base64 = data.toString('base64');
+            
+        });
+        readStream.on('end', () => {
+            res.send(base64);
+        });
     } else {
         res.status(404).json({
             err: 'Not an image',

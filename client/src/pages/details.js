@@ -32,6 +32,21 @@ const Details = () => {
         .catch(err => console.log(err));
     }
 
+    const downloadFile = async (file) => {
+      await fileService.downloadFile(file.fileId)
+        .then((res) => {
+            const url = `data:${file.fileExtension};base64,${res.data}`;
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', file.name); // TODO: revoir nom
+            document.body.appendChild(link);
+            link.click();
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }
+
     useEffect(() => {
         if (flag.current === false) {
           fetchData();
@@ -46,6 +61,7 @@ const Details = () => {
             <h3>{file.name}</h3>
             <p>Fichier du type: {file.fileExtension}</p>
             <FilePreview file={file} fileUrl={BASE_URL + 'file/stream/' + file.fileId} />
+            <button onClick={() => downloadFile(file)}>Télécharger</button>
         </div>
     );
 };

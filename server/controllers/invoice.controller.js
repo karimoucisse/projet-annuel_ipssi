@@ -49,7 +49,6 @@ const generatePDF = async (req, res) => {
         }
     };
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
-    
     const binaryResult = await new Promise((resolve, reject) =>{ 
     try {
         let chunks = [];
@@ -59,7 +58,6 @@ const generatePDF = async (req, res) => {
     } catch(err) {
         reject(err);
     }});
-
     res.contentType('application/pdf').send(binaryResult);
 }
 
