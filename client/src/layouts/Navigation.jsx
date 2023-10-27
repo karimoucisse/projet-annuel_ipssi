@@ -1,23 +1,24 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { accountService } from "../_services/account.service";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
-const Navigation = () => {
-  const navigate = useNavigate();
+const Navigation = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const logout = () => {
-    accountService.logout();
-    navigate('/auth/login');
-  }
-  let nav;
-  if (accountService.isLogged()) {
-    nav = (
-      <button onClick={logout}>Logout</button>
-    );
-  }
+  useEffect(() => {
+    if (accountService.isLogged()) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   return (
-    <div>{nav}</div>
+    <>
+      {isAuthenticated && <Header />}
+      {children}
+      {isAuthenticated && <Footer />}
+    </>
   );
 };
 

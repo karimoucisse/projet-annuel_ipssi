@@ -6,6 +6,7 @@ const ArchiConnectContainer = () => {
   return (
     <Box
       flex={0.9}
+      backgroundColor={theme.palette.primary.main}
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -13,7 +14,6 @@ const ArchiConnectContainer = () => {
         justifyContent: "center",
         padding: 4,
         gap: 3,
-        backgroundColor: theme.palette.primary.main,
         color: "white",
       }}
     >
