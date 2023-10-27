@@ -19,14 +19,6 @@ router.post('/login', async (req, res, next) => {
     }
 });
 
-router.post('/storage', authorization, async (req, res, next) => {
-    try {
-        await authController.addStorage(req, res, next);
-    } catch (error) {
-        next(error);
-    }
-});
-
 router.get('/storage', authorization, async (req, res, next) => {
     try {
         await authController.getStorage(req, res, next);

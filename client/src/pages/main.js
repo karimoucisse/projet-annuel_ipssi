@@ -25,7 +25,7 @@ const Main = () => {
         fetchData();
     };
 
-    const BASE_URL = 'http://localhost:3000/';
+    const BASE_URL = 'http://localhost:3000/'; // TODO: METTRE DANS .ENV
     const fetchUserStorage = async () => {
         try {
             const response = await accountService.getStorage();

@@ -120,19 +120,16 @@ router.get('/download/:filename', openConnection, async (req, res, next) => {
             err: 'No file exists',
         });
     }
-    // Check if image
-    //if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
     if (file) {
-        // Read output to browser
-        const readStream = gridfsBucket.openDownloadStream(file._id);
+        const readStream = await gridfsBucket.openDownloadStream(file._id);
         let base64;
         readStream.on('data', (data) => {
             base64 = data.toString('base64');
-            
-        });
-        readStream.on('end', () => {
             res.send(base64);
         });
+        //readStream.on('end', () => {
+        //    res.send(base64);
+        //});
     } else {
         res.status(404).json({
             err: 'Not an image',
