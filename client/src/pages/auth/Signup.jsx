@@ -1,153 +1,50 @@
-import React, { useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
-import AddressInfoForm from "../../components/auth/AdressInfoForm";
-import SubscriptionInfoForm from "../../components/auth/SubscriptionInfoForm";
-import Result from "../../components/auth/Result";
-import { accountService } from "../../_services/account.service";
-import UserInfoForm from "../../components/auth/UserInfoForm";
-
-const Subscription = () => {
-  const [activeStep, setActiveStep] = useState(0);
-  const [userInfo, setUserInfo] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
-    phone: "",
-    wayType: "",
-    number: "",
-    addressName: "",
-    postalCode: "",
-    state: "",
-    city: "",
-    country: "",
-    subscription: "",
-  });
-
-  const handleNext = () => {
-    // Ajoutez ici les vérifications de validation avant de passer à l'étape suivante.
-    if (activeStep === 0) {
-      if (!isStep0Valid(userInfo)) {
-        return;
-      }
-    } else if (activeStep === 1) {
-      if (!isStep1Valid(userInfo)) {
-        return;
-      }
-    } else if (activeStep === 2) {
-      if (!isStep2Valid(userInfo)) {
-        return;
-      }
-    }
-
-    setActiveStep((prevStep) => prevStep + 1);
+import { useEffect, useState } from "react";
+// @mui
+import {
+  Box,
+  Stack,
+  TextField,
+  Button,
+  Fade,
+  InputAdornment,
+  useTheme,
+  Typography,
+  Checkbox,
+  Link,
+  LinearProgress,
+  CircularProgress,
+  Container,
+  Stepper,
+  Step,
+  StepLabel,
+} from "@mui/material";
+// formik
+import { Formik, Form, Field } from "formik";
+// yup
+import * as Yup from "yup";
+import SignupStep1 from "../components/signup/SignupStep1";
+import SignupStep2 from "../components/signup/SignupStep2";
+import zIndex from "@mui/material/styles/zIndex";
+import StepperSection from "../components/StepperSection";
+import SignupStep3 from "../components/signup/SignupStep3";
+const Signup = () => {
+  const [step, setStep] = useState(1);
+  const tab = {
+    step1: <SignupStep1 setStep={setStep} />,
+    step2: <SignupStep2 setStep={setStep} />,
+    step3: <SignupStep3 setStep={setStep} />,
   };
 
-  const handleBack = () => {
-    setActiveStep((prevStep) => prevStep - 1);
-  };
-
-  const isStep0Valid = (data) => {
-    if (!data.firstname || !data.lastname || !data.email || !data.phone) {
-      return false;
-    }
-    return true;
-  };
-
-  const isStep1Valid = (data) => {
-    if (
-      !data.wayType ||
-      !data.number ||
-      !data.addressName ||
-      !data.postalCode ||
-      !data.state ||
-      !data.city ||
-      !data.country
-    ) {
-      return false;
-    }
-    return true;
-  };
-
-  const isStep2Valid = (data) => {
-    if (!data.subscription) {
-      return false;
-    }
-    return true;
-  };
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    console.log(userInfo);
-    if (
-      isStep0Valid(userInfo) &&
-      isStep1Valid(userInfo) &&
-      isStep2Valid(userInfo)
-    ) {
-      await accountService
-        .signup(userInfo) // On inscrit l'utilisateur
-        .then((res) => {
-          console.log(res);
-          if (res.data.message === "user created" && res.data.user.id) {
-            accountService.deleteUserId();
-            accountService.saveUserId(res.data.user.id);
-          }
-        })
-        .catch((err) => console.log(err));
-
-      //accountService.getBasket({ userId: accountService.getUserId() }) // TODO: Si l'utilisateur n'a pas validé son paiement et qu'il souhaite finaliser son inscription on revient chercher son panier
-      //    .then(res => {
-      //        console.log(res.data);
-      //        setBasketContent(res.data);
-      //        setBasketIsValidate(true);
-      //    })
-      //    .catch(err => console.log(err));
-
-      await accountService
-        .payment({
-          subscription: userInfo.subscription,
-          userId: accountService.getUserId(),
-        }) // L'utilisateur passe au paiement
-        .then((res) => {
-          console.log(res);
-          if (res.data.url) {
-            window.location.href = res.data.url;
-          }
-        })
-        .catch((err) => console.log(err));
-    }
-  };
+  const stepsValue = ["Inscription", "adresse de paiment", "paiment"];
 
   return (
-    <Box p={2}>
-      {activeStep === 0 && (
-        <UserInfoForm
-          userInfo={userInfo}
-          onNext={handleNext}
-          onBack={handleBack}
-          onChange={(data) => setUserInfo({ ...userInfo, ...data })}
-        />
+    <Box height="100vh">
+      {step !== 1 && (
+        <StepperSection valueArray={stepsValue} step={step} setStep={setStep} />
       )}
-      {activeStep === 1 && (
-        <AddressInfoForm
-          userInfo={userInfo}
-          onNext={handleNext}
-          onBack={handleBack}
-          onChange={(data) => setUserInfo({ ...userInfo, ...data })}
-        />
-      )}
-      {activeStep === 2 && (
-        <SubscriptionInfoForm
-          userInfo={userInfo}
-          onNext={handleNext}
-          onBack={handleBack}
-          onChange={(data) => setUserInfo({ ...userInfo, ...data })}
-        />
-      )}
-      {activeStep === 3 && (
-        <Result userInfo={userInfo} onBack={handleBack} onSubmit={onSubmit} />
-      )}
+      {tab[`step${step}`]}
     </Box>
   );
 };
 
-export default Subscription;
+export default Signup;
