@@ -409,6 +409,5 @@ module.exports.deleteUser = deleteUser;
 module.exports.getUsers = getUsers;
 module.exports.getUserById = getUserById;
 module.exports.getUserInfoById = getUserInfoById;
-module.exports.addStorage = addStorage;
 module.exports.getStorage = getStorage;
 // module.exports.getInvoice = getInvoice;
