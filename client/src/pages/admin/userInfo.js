@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from "react-router-dom";
 import AdminService from '../../_services/admin.service';
+import { Paper, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import Table from '@mui/material/Table';
+import TableHead from '@mui/material/TableHead';
 
 const UserInfo = () => {
     const { userId } = useParams();
@@ -63,6 +66,14 @@ const UserInfo = () => {
             .catch(err => console.log(err));
     };
 
+    const columns = [
+        { id: 'name', label: 'Name', minWidth: 100 },
+        { id: 'Extension', label: 'Extension', minWidth: 100 },
+        { id: 'fileSize', label: 'Size', minWidth: 100 },
+        { id: 'createdAt', label: 'Created', minWidth: 100 },
+        { id: 'updatedAt', label: 'Updated', minWidth: 100 }
+    ];
+
     return (
         <div className='UserInfo'>
             UserFiles
@@ -79,30 +90,53 @@ const UserInfo = () => {
                 <option value="cat">Video</option>
                 <option value="hamster">PDF</option>
             </select>
-            <table>
-                <thead>
-                    <tr>
-                        <th onClick={() => addParams('name')}>Name</th>
-                        <th>Extension</th>
-                        <th onClick={() => addParams('fileSize')}>Size</th>
-                        <th onClick={() => addParams('createdAt')}>Created</th>
-                        <th onClick={() => addParams('updatedAt')}>Updated</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        files.map(file => (
-                            <tr key={file._id}>
-                                <td>{file.name}</td>
-                                <td>{file.fileExtension}</td>
-                                <td>{file.fileSize.$numberDecimal}</td>
-                                <td>{file.createdAt}</td>
-                                <td>{file.updatedAt}</td>
-                            </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
+
+
+            <Paper sx={{ width: '100%' }}>
+                <TableContainer>
+                    <Table stickyHeader ario-label="sticky table">
+                        <TableHead>
+                            <TableRow>
+                                {columns.map((column) => (
+                                    <TableCell
+                                        key={column.id}
+                                        align={column.align}
+                                        style={{ minWidth: column.minWidth }}
+                                        onClick={() => addParams(column.id)}
+                                    >
+                                        {column.label}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                files.map((file) => {
+                                    return (
+                                        <TableRow hover key={file._id}>
+                                            <TableCell>
+                                                {file.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {file.fileExtension}
+                                            </TableCell>
+                                            <TableCell>
+                                                {file.fileSize.$numberDecimal}
+                                            </TableCell>
+                                            <TableCell>
+                                                {file.createdAt}
+                                            </TableCell>
+                                            <TableCell>
+                                                {file.updatedAt}
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
         </div>
     );
 }

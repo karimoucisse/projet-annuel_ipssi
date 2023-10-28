@@ -2,6 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userService } from '../../_services/user.service';
 import AdminService from '../../_services/admin.service';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableHead from '@mui/material/TableHead';
+import { TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 
 const UserList = () => {
     let navigate = useNavigate();
@@ -88,41 +92,79 @@ const UserList = () => {
     }
     // TODO: FAIRE TOGGLE BUTTON POUR ACTIVE, RENDRE POSSIBLE A L'ADMIN DE RENDRE ACTIF L'UTILISATEUR
     // TODO: FAIRE SOMME DES POIDS DES FICHIERS ET LES AFFICHER
+
+    const columns = [
+        { id: 'Firstname', label: 'Firstname', minWidth: 100 },
+        { id: 'Lastname', label: 'Lastname', minWidth: 100 },
+        { id: 'Email', label: 'Email', minWidth: 100 },
+        { id: 'Role', label: 'Role', minWidth: 100 },
+        { id: 'Phone', label: 'Phone', minWidth: 100 },
+        { id: 'Created', label: 'Created', minWidth: 100 },
+        { id: 'Active', label: 'Active', minWidth: 100 },
+        { id: 'Stockage', label: 'Stockage', minWidth: 100, align: 'right'},
+        { id: 'Disponible', label: 'Disponible', minWidth: 100, align: 'right'}
+      ];
     return (
         <div className='User'>
-            User List
-            <table>
-                <thead>
-                    <tr>
-                        <th>Firstname</th>
-                        <th>Lastname</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Phone</th>
-                        <th>Created</th>
-                        <th>Active</th>
-                        <th>Stockage</th>
-                        <th>Disponible</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        users.map(user => (
-                            <tr key={user._id}>
-                                <td>{user.firstname}</td>
-                                <td onClick={() => displayDetail(user._id) }>{user.lastname}</td>
-                                <td>{user.email}</td>
-                                <td>{user.role}</td>
-                                <td>{user.phone}</td>
-                                <td>{user.createdAt}</td>
-                                <td>{(user.active) ? "True" : "False"}</td>
-                                <td>{displaySize(user._id)}</td>
-                                <td>{displayFreeStorage(user._id)}</td>
-                            </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
+            <Paper sx={{ width: '100%'}}>
+                <TableContainer>
+                    <Table stickyHeader ario-label="sticky table">
+                        <TableHead>
+                            <TableRow>
+                                {columns.map((column) => (
+                                    <TableCell
+                                        key={column.id}
+                                        align={column.align}
+                                        style={{ minWidth: column.minWidth }}
+                                    >
+                                        {column.label}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {
+                                users.map((user) => {
+                                    return (
+                                        <TableRow hover key={user._id} onClick={() => displayDetail(user._id) }>
+                                            <TableCell>
+                                                {user.firstname}
+                                            </TableCell>
+                                            <TableCell>
+                                                {user.lastname}
+                                            </TableCell>
+                                            <TableCell>
+                                                {user.email}
+                                            </TableCell>
+                                            <TableCell>
+                                                {user.role}
+                                            </TableCell>
+                                            <TableCell>
+                                                {user.phone}
+                                            </TableCell>
+                                            <TableCell>
+                                                {user.createdAt}
+                                            </TableCell>
+                                            <TableCell>
+                                                {(user.active) ? "True" : "False"}
+                                            </TableCell>
+                                            <TableCell>
+                                                {displaySize(user._id)}
+                                            </TableCell>
+                                            <TableCell>
+                                                {displayFreeStorage(user._id)}
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                })
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
+
+
+
         </div>
     );
 }

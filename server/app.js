@@ -58,10 +58,8 @@ app.post(
             //    break;
             case 'payment_intent.succeeded':
                 if (userId) {
-                    const user = await User.findOne({
-                        _id: userId,
-                    });
-                    if (!user.active) {
+                    const user = await User.findById(userId);
+                    if (user && !user.active) {
                         await User.findByIdAndUpdate(userId, { active: true });
                     }
                     const alreadySubscription = await Subscription.findOne({

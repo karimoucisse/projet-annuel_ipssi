@@ -89,8 +89,9 @@ const Subscription = () => {
       await accountService
         .signup(userInfo)
         .then((res) => {
-          console.log(res);
+          console.log('dataUser', res);
           if (res.data.message === "user created" && res.data.user.id) {
+            console.log('je dois rentrer là');
             accountService.deleteUserId();
             accountService.saveUserId(res.data.user.id);
           }
