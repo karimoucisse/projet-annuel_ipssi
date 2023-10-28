@@ -71,7 +71,7 @@ const Routeur = () => {
                 <Routes>
                   <Route index element={<Authentication />} />
                   <Route path="login" element={<Authentication />} />
-                  <Route path="signup" element={<Signup />} />
+                  <Route path="signup" element={<Subscription />} />
                   <Route path="*" element={<Authentication />} />
                 </Routes>
               </VisitorGuard>
