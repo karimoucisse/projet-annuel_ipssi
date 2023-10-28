@@ -27,6 +27,7 @@ import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
 // Redux
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../../../redux/userSlice";
+import ArchiConnectContainer from "../ArchiConnectContainer";
 const SignupStep1 = ({ setStep }) => {
   const theme = useTheme();
   // const { userInfo } = useSelector((select) => select.profile);
@@ -172,12 +173,12 @@ const SignupStep1 = ({ setStep }) => {
                     }}
                     // onClick={() => setStep(2)}
                   >
-                    Suivant
+                    Continuer
                   </Button>
                 </Form>
               )}
             </Formik>
-            <Stack
+            {/* <Stack
               mt={2}
               spacing={2}
               sx={{
@@ -208,41 +209,10 @@ const SignupStep1 = ({ setStep }) => {
                 <FacebookOutlinedIcon sx={{ marginRight: 4 }} />
                 Connexion avec Facebook
               </Button>
-            </Stack>
+            </Stack> */}
           </Stack>
         </Box>
-        <Box
-          flex={0.9}
-          backgroundColor={theme.palette.primary.main}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 4,
-            gap: 3,
-            color: "white",
-            // position: 'relative',
-          }}
-        >
-          <Typography variant="h2" textAlign="center" width="100%">
-            ArchiConnect
-          </Typography>
-          <Typography variant="subtitle1">
-            Conservez vos fichiers en toute sécurité, prêts à <br /> être
-            consultés et partagés à tout moment.
-          </Typography>
-          {/* <Box
-           sx={{ position: 'absolute', bottom: '40px', right: '-50px' }}
-           >
-           <Avatar
-             variant="square"
-             alt="Architecture"
-             src="/assets/architecture.jpg"
-             sx={{ width: '400px', height: '400px' }}
-           />
-          </Box> */}
-        </Box>
+        <ArchiConnectContainer />
       </Stack>
     </Box>
   );

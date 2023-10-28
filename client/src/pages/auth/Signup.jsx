@@ -22,11 +22,11 @@ import {
 import { Formik, Form, Field } from "formik";
 // yup
 import * as Yup from "yup";
-import SignupStep1 from "../components/signup/SignupStep1";
-import SignupStep2 from "../components/signup/SignupStep2";
+import SignupStep1 from "../../components/auth/signup/SignupStep1";
+import SignupStep2 from "../../components/auth/signup/SignupStep2";
 import zIndex from "@mui/material/styles/zIndex";
-import StepperSection from "../components/StepperSection";
-import SignupStep3 from "../components/signup/SignupStep3";
+// import StepperSection from "../components/StepperSection";
+import SignupStep3 from "../../components/auth/signup/SignupStep3";
 const Signup = () => {
   const [step, setStep] = useState(1);
   const tab = {
@@ -35,13 +35,13 @@ const Signup = () => {
     step3: <SignupStep3 setStep={setStep} />,
   };
 
-  const stepsValue = ["Inscription", "adresse de paiment", "paiment"];
+  // const stepsValue = ["Inscription", "adresse de paiment", "paiment"];
 
   return (
     <Box height="100vh">
-      {step !== 1 && (
+      {/* {step !== 1 && (
         <StepperSection valueArray={stepsValue} step={step} setStep={setStep} />
-      )}
+      )} */}
       {tab[`step${step}`]}
     </Box>
   );

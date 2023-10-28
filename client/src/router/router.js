@@ -13,6 +13,7 @@ import ProfileRouter from "../pages/profile/profileRouter";
 import LegalInformation from "../pages/InformationsLegal";
 import Authentication from "../pages/auth/authentication";
 import Subscription from "../pages/auth/subscription";
+import Signup from "../pages/auth/Signup";
 
 const Routeur = () => {
   return (
@@ -70,7 +71,7 @@ const Routeur = () => {
                 <Routes>
                   <Route index element={<Authentication />} />
                   <Route path="login" element={<Authentication />} />
-                  <Route path="signup" element={<Subscription />} />
+                  <Route path="signup" element={<Signup />} />
                   <Route path="*" element={<Authentication />} />
                 </Routes>
               </VisitorGuard>
