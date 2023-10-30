@@ -4,6 +4,7 @@ import AdminService from '../../_services/admin.service';
 import { Paper, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
+import formatDate from '../../_helpers/formatDate';
 
 const UserInfo = () => {
     const { userId } = useParams();
@@ -124,10 +125,10 @@ const UserInfo = () => {
                                                 {file.fileSize.$numberDecimal}
                                             </TableCell>
                                             <TableCell>
-                                                {file.createdAt}
+                                                {formatDate(file.createdAt)}
                                             </TableCell>
                                             <TableCell>
-                                                {file.updatedAt}
+                                                {formatDate(file.updatedAt)}
                                             </TableCell>
                                         </TableRow>
                                     )

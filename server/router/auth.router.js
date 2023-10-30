@@ -1,9 +1,11 @@
 const router = require('express').Router();
 const authController = require('../controllers/auth.controller');
 const authorization = require('../middlewares/authorization.mid');
+const login = require('../middlewares/login.mid');
+const subscriptionIsValid = require('../middlewares/subscriptionIsValid.mid');
 const { openConnection } = require('../services/gridfs/gfs.service');
 
-router.post('/signup', async (req, res, next) => {
+router.post('/signup', subscriptionIsValid, async (req, res, next) => {
     try {
         await authController.signup(req, res);
     } catch (error) {
@@ -11,7 +13,7 @@ router.post('/signup', async (req, res, next) => {
     }
 });
 
-router.post('/login', async (req, res, next) => {
+router.post('/login', login, async (req, res, next) => {
     try {
         await authController.login(req, res, next);
     } catch (error) {
@@ -64,7 +66,7 @@ router.get('/userinfo/:userId', async (req, res, next) => {
 // route pour mettre à jour les informations de l'utilisateur
 router.patch('/updateUser', authorization, async (req, res, next) => {
     try {
-        await authController.updateUserAndAdress(req, res, next);
+        await authController.updateUserAndAddress(req, res, next);
     } catch (error) {
         next(error);
     }

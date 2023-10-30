@@ -5,7 +5,9 @@ import AdminService from '../../_services/admin.service';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
+import Button from '@mui/material/Button';
 import { TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import formatDate from '../../_helpers/formatDate';
 
 const UserList = () => {
     let navigate = useNavigate();
@@ -104,8 +106,13 @@ const UserList = () => {
         { id: 'Stockage', label: 'Stockage', minWidth: 100, align: 'right'},
         { id: 'Disponible', label: 'Disponible', minWidth: 100, align: 'right'}
       ];
+
+    const displayStatistics = () => {
+        navigate('/admin/statistics');
+    }
     return (
         <div className='User'>
+            <Button variant="contained" color='success' onClick={() => displayStatistics()}>Statistics</Button>
             <Paper sx={{ width: '100%'}}>
                 <TableContainer>
                     <Table stickyHeader ario-label="sticky table">
@@ -143,7 +150,7 @@ const UserList = () => {
                                                 {user.phone}
                                             </TableCell>
                                             <TableCell>
-                                                {user.createdAt}
+                                                {formatDate(user.createdAt)}
                                             </TableCell>
                                             <TableCell>
                                                 {(user.active) ? "True" : "False"}
