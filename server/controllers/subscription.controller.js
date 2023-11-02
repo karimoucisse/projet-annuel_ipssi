@@ -23,7 +23,7 @@ const getSizes = async (req, res) => {
         },
     ]);
     
-    const data = processSizeFilesData(allSizesGroupByUser);;
+    const data = processSizeFilesData(allSizesGroupByUser);
     res.status(200).json(data);
 };
 

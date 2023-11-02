@@ -1,5 +1,5 @@
 const File = require('../models/file.model');
-const { deleteFileFromGrid } = require('../services/file.service');
+const { deleteFileFromGrid, getFileFromGrid } = require('../services/file.service');
 
 const getFiles = async (req, res) => {
     const files = await File.find({ userId: req.user.userId });
@@ -32,7 +32,26 @@ const createFile = async (req, res) => {
     return res.status(201).json({ message: 'File uploaded' });
 };
 
+const streamFile = async (req, res) => {
+    const readStream = await getFileFromGrid(req);
+    readStream.pipe(res);
+};
+
+const downloadFile = async (req, res) => { // TODO: REVOIR CETTE FONCTION
+    const readStream = await getFileFromGrid(req);
+    let base64;
+    readStream.on('data', (data) => {
+        base64 = data.toString('base64');
+        res.send(base64);
+    });
+    //readStream.on('end', () => {
+    //    res.send(base64);
+    //});
+}
+
 module.exports.getFiles = getFiles;
 module.exports.deleteFile = deleteFile;
 module.exports.createFile = createFile;
 module.exports.searchFiles = searchFiles;
+module.exports.streamFile = streamFile;
+module.exports.downloadFile = downloadFile;
