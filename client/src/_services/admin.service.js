@@ -16,7 +16,6 @@ class AdminService {
     }
 
     static getUserFiles = (userId) => {
-        console.log(this.params);
         return Axios.get('/admin/user/' + userId, this.params);
     }
 

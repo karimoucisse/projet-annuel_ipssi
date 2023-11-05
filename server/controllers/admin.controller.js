@@ -8,8 +8,23 @@ const getUsers = async (req, res) => {
 };
 
 const getUserFiles = async (req, res) => {
-    const params = getParams(req);
-    const getFilesByUserId = await File.find(params.params).sort(params.sortObject); // TODO: Tester fonction sort si aucun paramètre n'est passé
+    console.log(req.query);
+    let getFilesByUserId;
+    if(req.query.extension != '' && req.query.extension != undefined){
+        getFilesByUserId = await File.find({userId: req.params.userId, fileExtension: req.query.extension});
+    }
+    else if(req.query.param != '' && req.query.extension != undefined){
+        const sortParam = req.query.param;
+        const sortDirection = parseInt(req.query.direction);
+        const sortObject = {};
+        sortObject[sortParam] = sortDirection;
+        getFilesByUserId = await File.find({userId: req.params.userId}).sort(sortObject);
+    }
+    else {
+        getFilesByUserId = await File.find({ userId: req.params.userId });
+    }
+    console.log(getFilesByUserId);
+    
     return res.status(200).json(getFilesByUserId);
 };
 
