@@ -1,4 +1,5 @@
 const User = require('../models/user.model');
+const bcrypt = require('bcrypt');
 
 const login = async (req, res, next) => {
     try{
@@ -18,7 +19,7 @@ const login = async (req, res, next) => {
         }
         req.foundUser = foundUser;
         next();
-    } catch {
+    } catch (error){
         next(error);
     }
 }

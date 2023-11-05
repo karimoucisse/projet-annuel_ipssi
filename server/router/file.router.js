@@ -6,6 +6,7 @@ const {
     upload,
     openConnection,
 } = require('../services/gridfs/gfs.service');
+const checkStorage = require('../middlewares/checkStorage.mid');
 
 router.get('/files', authorization, async (req, res, next) => {
     try {
@@ -26,6 +27,7 @@ router.get('/search/:userId', authorization, async (req, res, next) => {
 router.post(
     '/upload',
     authorization,
+    checkStorage,
     openConnection,
     upload.single('file'),
     async (req, res, next) => {

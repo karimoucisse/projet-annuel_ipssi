@@ -37,6 +37,10 @@ class AdminService {
         return Axios.get('/admin/statistics');
     }
 
+    static getAuthorization = () => {
+        return Axios.get('/admin/authorization');
+    }
+
 }
 
 export default AdminService;

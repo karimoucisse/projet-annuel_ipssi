@@ -7,13 +7,12 @@ import AdminRouter from "../pages/admin/adminRouter";
 import Details from "../pages/details";
 import CheckoutSuccess from "../pages/stripe/checkoutSuccess";
 import CheckoutFailed from "../pages/stripe/checkoutFailed";
-import VisitorGuard from "../_helpers/visitorGuard";
 import MyDocument from "../pages/profile/storage";
 import ProfileRouter from "../pages/profile/profileRouter";
 import LegalInformation from "../pages/InformationsLegal";
 import Authentication from "../pages/auth/authentication";
 import Subscription from "../pages/auth/subscription";
-import Signup from "../pages/auth/Signup";
+import AuthAdminGuard from "../_helpers/authAdminGuard";
 
 const Routeur = () => {
   return (
@@ -39,10 +38,9 @@ const Routeur = () => {
           <Route
             path="/admin/*"
             element={
-              // TODO: FAIRE AUTH ADMIN GUARD POUR SECURISER LES ROUTES ADMIN
-              <AuthGuard>
+              <AuthAdminGuard>
                 <AdminRouter />
-              </AuthGuard>
+              </AuthAdminGuard>
             }
           />
           <Route
@@ -67,14 +65,12 @@ const Routeur = () => {
           <Route
             path="/auth/*"
             element={
-              <VisitorGuard>
                 <Routes>
                   <Route index element={<Authentication />} />
                   <Route path="login" element={<Authentication />} />
                   <Route path="signup" element={<Subscription />} />
                   <Route path="*" element={<Authentication />} />
                 </Routes>
-              </VisitorGuard>
             }
           />
           <Route path="*" element={<NoMatch />} />

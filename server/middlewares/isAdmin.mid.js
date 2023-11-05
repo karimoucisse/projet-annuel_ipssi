@@ -9,7 +9,7 @@ const isAdmin = async (req, res, next) => {
         if (user.role !== 'ADMIN') {
             // On vient vérifier que l'utilisateur est bien un admin
             return res.status(401).json({
-                message: 'You are not authorized to access this page',
+                'res': false,
             });
         }
         next();

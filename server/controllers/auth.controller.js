@@ -87,9 +87,8 @@ const signup = async (req, res) => {
 
 const getStorage = async (req, res) => {
     try {
-        const storage = await Subscription.find({ userId: req.user.userId });
-        const sumStorage = storage.reduce((acc, curr) => acc + curr.storage, 0);
-        return res.status(200).json({ storage, sum: sumStorage });
+        const storage = await Subscription.findOne({ userId: req.user.userId });
+        return res.status(200).json({ storage, sum: storage.storage });
     } catch (error) {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -241,7 +240,6 @@ const updateUserAndAddress = async (req, res) => {
     }
 };
 
-module.exports.updateUser = updateUser;
 module.exports.updateUserAndAddress = updateUserAndAddress;
 module.exports.signup = signup;
 module.exports.login = login;
