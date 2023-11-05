@@ -92,10 +92,7 @@ app.post(
                             ? 'Adding storage'
                             : 'Subscription to ArchiConnect',
                     });
-                    // await sendEmail(
-                    //    user.email,
-                    //    confirmPaymentTemplate
-                    // );
+                    await sendEmail(user.email, confirmPaymentTemplate);
                     // await sendSMS('33624864608');
                 } else {
                     console.error('il y a un problème'); // TODO: Renvoyer message d'erreur

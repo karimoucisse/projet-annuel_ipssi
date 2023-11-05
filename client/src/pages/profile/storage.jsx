@@ -33,8 +33,16 @@ const Storage = () => {
     }, [invoiceDate]);
 
     return (
-        <Container maxWidth="md" style={{ padding: '16px', margin: '20px', backdropFilter: 'blur(10px)', backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: '10px' }}>
-            <Box display="flex" alignItems="center">
+        <Container
+            maxWidth="md"
+            style={{
+                height: 'calc(100vw - 70px)',
+                padding: '16px',
+                backdropFilter: 'blur(10px)',
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                borderRadius: '10px',
+            }}
+        >            <Box display="flex" alignItems="center">
                 <CalendarMonthIcon sx={{ fontSize: 24, marginRight: 1 }} />
                 <Typography variant="body1">Date :</Typography>
                 <Typography>{invoiceDate}</Typography>

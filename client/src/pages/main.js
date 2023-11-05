@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Container, Grid, Card, CardContent, CardMedia, Typography, MenuItem, Button, Select, TextField, Box } from "@mui/material";
+import { Container, Grid, Card, CardContent, CardMedia, Typography, MenuItem, Button, Select, TextField, Box, LinearProgress } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { fileService } from '../_services/file.service';
 import FileUpload from "../components/FileUploader";
 import { useNavigate } from "react-router-dom";
@@ -8,17 +9,29 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import StorageIcon from '@mui/icons-material/Storage';
 import { accountService } from "../_services/account.service";
 
+
 const Main = () => {
     const [files, setFiles] = useState([]);
-    const [displayedFiles, setDisplayedFiles] = useState(6); // Nombre de cartes affichées
+    const [displayedFiles, setDisplayedFiles] = useState(6);
     const navigate = useNavigate();
     const [sortBy, setSortBy] = useState('date');
     const [filterType, setFilterType] = useState('');
     const [searchFileName, setSearchFileName] = useState('');
     const [sortDirection, setSortDirection] = useState("asc");
-    const [userStorage, setUserStorage] = useState(0); // Stockage de l'utilisateur
+    const [totalStorage, setTotalStorage] = useState(0);
+    const [usedStorage, setUsedStorage] = useState(0);
+    const [upload, setUpload] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [fileToDelete, setFileToDelete] = useState(null); // Pour stocker le fichier à supprimer
 
-
+    const openDeleteDialog = (file) => {
+        setFileToDelete(file);
+        setDeleteDialogOpen(true);
+    };
+    const closeDeleteDialog = () => {
+        setFileToDelete(null);
+        setDeleteDialogOpen(false);
+    };
     const toggleSortDirection = () => {
         const newDirection = sortDirection === "asc" ? "desc" : "asc";
         setSortDirection(newDirection);
@@ -26,13 +39,30 @@ const Main = () => {
     };
 
     const BASE_URL = 'http://localhost:3000/'; // TODO: METTRE DANS .ENV
+    const addStorage = async () => {
+        // await accountService.addStorage({ subscription: "1" })
+        //     .then(res => {
+        //         console.log(res);
+        //     })
+        //     .catch(err => console.log(err));
+
+        await accountService.payment({ subscription: "1", userId: accountService.getUserId() }) // L'utilisateur passe au paiement
+            .then(res => {
+                console.log(res);
+                if (res.data.url) {
+                    window.location.href = res.data.url;
+                }
+            })
+            .catch(err => console.log(err));
+    }
+
     const fetchUserStorage = async () => {
         try {
             const response = await accountService.getStorage();
-            const totalStorage = response.data.storage[0].totalStorage;
-            const usedStorage = response.data.storage[0].usedStorage;
-            const remainingStorage = totalStorage - usedStorage;
-            setUserStorage(remainingStorage);
+            const totalStorage = response.data.sum * 2048;
+            console.log(totalStorage)
+            // const remainingStorage = totalStorage - usedStorage;
+            setTotalStorage(totalStorage);
         } catch (error) {
             console.log(error);
         }
@@ -40,6 +70,19 @@ const Main = () => {
     const fetchData = async () => {
         try {
             const fileResponse = await fileService.getAllFiles();
+
+            // Utilisez reduce pour calculer la somme des tailles de fichiers
+            const totalSizeInBytes = fileResponse.data.reduce((accumulator, file) => {
+                const fileSizeInBytes = parseFloat(file.fileSize.$numberDecimal);
+                return accumulator + fileSizeInBytes;
+            }, 0);
+
+            // Convertir la somme en Mo (1 Mo = 1024 Ko = 1024 * 1024 octets)
+            const totalSizeInMegabytes = (totalSizeInBytes / (1024 * 1024)).toFixed(2);
+
+            // Mettez à jour le state usedStorage avec la somme en Mo
+            setUsedStorage(totalSizeInMegabytes);
+            console.log(totalSizeInMegabytes)
             const sortedFiles = fileResponse.data.slice().sort((a, b) => {
                 const sortOrder = sortDirection === "asc" ? 1 : -1;
 
@@ -82,21 +125,26 @@ const Main = () => {
 
     const onUploadFile = async (file) => {
         try {
+            console.log("up 1 => ", upload);
             await fileService.uploadFile(file);
-            fetchData();
+            setUpload(true);
+            await fetchData();
+            setUpload(false)
         } catch (error) {
             console.log(error);
         }
     };
 
-    const deleteFile = async (fileId) => {
+    const handleDeleteFile = async (file) => {
         try {
-            await fileService.deleteFile(fileId);
+            await fileService.deleteFile(file._id);
             fetchData();
+            closeDeleteDialog();
         } catch (error) {
             console.log(error);
         }
     };
+
 
     const handleDetails = (fileId) => {
         navigate(`/details/${fileId}`);
@@ -139,7 +187,11 @@ const Main = () => {
 
     const searchBarStyle = {
         width: "80%",
-        marginBottom: "10px"
+        marginBottom: "10px",
+        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        borderRadius: "10px",
+        backdropFilter: "blur(10px)",
+
     };
 
     const menuStyle = {
@@ -167,27 +219,59 @@ const Main = () => {
     const boxContainerStyle = {
         display: 'flex',
         justifyContent: 'space-between',
-        width: "100%",
+        // width: "100%",
         alignItems: 'center',
         border: '1px solid #ccc',
-        padding: '10px',
+        // padding: '10px',
         borderRadius: '5px',
-        backgroundColor: '#f7f7f7',
+        // backgroundColor: '#f7f7f7',
         marginBottom: '20px',
+        width: "70%"
     };
-
+    const borderLinearProgressStyle = {
+        height: "8px",
+        borderRadius: "5px",
+        backgroundColor: "lightgray",
+    };
     return (
         <Container maxWidth="90vw" style={homeContainerStyle}>
-            <Typography variant="h6" gutterBottom>
-                Espace de stockage restant : {userStorage} Mo
-            </Typography>
+            <Box
+                width="60%"
+                padding="20px"
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                border="1px solid black"
+                backgroundColor="rgba(255, 255, 255, 0.9)"
+                borderRadius="5px"
+                backdropFilter="blur(10px)"
+                marginBottom='20px'
+            >
+                <Box display="flex" alignItems="center" flexDirection="column">
+                    <Box width={"250px"} display="flex" alignItems="center">
+                        <StorageIcon fontSize={"small"} />
+                        <Typography display="flex" alignItems="center" paddingLeft={"5px"} paddingTop={"5px"} fontWeight={"bold"} fontSize={"12px"} variant="body1" gutterBottom>
+                            Espace de stockage : {usedStorage}/{totalStorage} Mo
+                        </Typography>
+                    </Box>
+                    <LinearProgress
+                        variant="determinate"
+                        value={(usedStorage / totalStorage) * 100}
+                        style={{ width: "250px", ...borderLinearProgressStyle }}
+                    />
+                </Box>
+                <Button onClick={addStorage} variant="contained" style={btnStyle}>
+                    Ajouter du stockage
+                </Button>
+            </Box>
             <TextField
                 label="Rechercher par nom de fichier"
                 value={searchFileName}
                 onChange={(e) => setSearchFileName(e.target.value)}
                 style={searchBarStyle}
             />
-            <FileUpload onUpload={onUploadFile} />
+            <FileUpload onUpload={onUploadFile} onUploadProgress={upload} />
+
             <Container style={containerStyle}>
                 <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} width={"100%"}>
                     <Typography variant="h4" gutterBottom>Fichiers</Typography>
@@ -205,9 +289,11 @@ const Main = () => {
                             style={menuStyle}
                         >
                             <MenuItem value="">Tous les formats</MenuItem>
-                            <MenuItem value="application/pdf">PDF</MenuItem>
+                            <MenuItem value="application/pdf">pdf</MenuItem>
                             <MenuItem value="application/vnd.openxmlformats-officedocument.wordprocessingml.document">Docx</MenuItem>
                             <MenuItem value="image/jpeg">jpeg</MenuItem>
+                            <MenuItem value="image/png">png</MenuItem>
+                            <MenuItem value="image/gif">gif</MenuItem>
                         </Select>
                     </Box>
                 </Box>
@@ -237,11 +323,12 @@ const Main = () => {
                                     </Button>
                                     <Button
                                         variant="contained"
-                                        onClick={() => deleteFile(file._id)}
+                                        onClick={() => openDeleteDialog(file)}
                                         style={btnLogoutStyle}
                                     >
                                         Supprimer
                                     </Button>
+
                                 </Box>
                             </Card>
                         </Grid>
@@ -253,7 +340,24 @@ const Main = () => {
                     </Box>
                 )}
             </Container>
-        </Container>
+            <Dialog open={deleteDialogOpen} onClose={closeDeleteDialog}>
+                <DialogTitle>Confirmation de suppression</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Êtes-vous sûr de vouloir supprimer le fichier "{fileToDelete?.name}" ?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={closeDeleteDialog} color="primary">
+                        Annuler
+                    </Button>
+                    <Button onClick={() => handleDeleteFile(fileToDelete)} color="primary">
+                        Supprimer
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+        </Container >
     );
 };
 

@@ -47,7 +47,7 @@ const CheckoutFailed = () => {
                     variant="contained"
                     color="primary"
                 >
-                    Retour à l'inscription
+                    Retour
                 </Button>
             </Box>
         </Container>

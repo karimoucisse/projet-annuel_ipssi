@@ -1,13 +1,25 @@
-import React, { useState } from "react";
-import { Button, Typography, Paper, Box, useTheme } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Typography,
+  Paper,
+  Box,
+  useTheme,
+  CircularProgress,
+} from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloudDoneIcon from "@mui/icons-material/CloudDone";
 
-const FileUpload = ({ onUpload }) => {
+const FileUpload = ({ onUpload, onUploadProgress }) => {
   const [dragging, setDragging] = useState(false);
-  const [fileUploaded, setFileUploaded] = useState(false);
+  const [fileUploading, setFileUploading] = useState(false);
   const theme = useTheme();
-
+  useEffect(() => {
+    if (onUploadProgress) {
+      setFileUploading(false);
+      console.log("onUpload ====> ", onUploadProgress)
+    }
+  }, [onUploadProgress]);
   const handleDragEnter = (e) => {
     e.preventDefault();
     setDragging(true);
@@ -23,13 +35,13 @@ const FileUpload = ({ onUpload }) => {
     setDragging(false);
     const files = e.dataTransfer.files;
     onUpload(files[0]);
-    setFileUploaded(true);
+    setFileUploading(true);
   };
 
   const handleFileInput = (e) => {
     const file = e.target.files[0];
     onUpload(file);
-    setFileUploaded(true);
+    setFileUploading(true);
   };
 
   const styles = {
@@ -48,7 +60,7 @@ const FileUpload = ({ onUpload }) => {
         background: "rgba(255, 255, 255, 0.2)",
         backdropFilter: "blur(10px)",
         borderRadius: "20px",
-        border: `3px dashed ${fileUploaded ? "green" : "#FADF8B"}`,
+        border: `3px dashed ${fileUploading ? "green" : "#FADF8B"}`,
         transition: "border .3s",
         width: "80%",
         marginBlock: "20px",
@@ -59,11 +71,11 @@ const FileUpload = ({ onUpload }) => {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      {fileUploaded ? (
+      {fileUploading ? (
         <Box>
-          <CloudDoneIcon sx={styles.cloudUploaderIcon} />
+          <CircularProgress />
           <Typography variant="h6" gutterBottom>
-            Fichier téléchargé
+            Téléchargement en cours...
           </Typography>
         </Box>
       ) : dragging ? (
