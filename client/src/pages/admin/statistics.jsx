@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import AdminService from '../../_services/admin.service';
-import PieChartFilesByUser from '../../components/statistics/PieChartFilesByUser';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import { PieChart, Pie, Cell } from "recharts";
 
 const Statistics = () => {
     const flag = useRef(false);
     const [statistics, setStatistics] = useState([]);
+    const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
     useEffect(() => {
         if(flag.current === false){
@@ -33,13 +34,26 @@ const Statistics = () => {
                     },
                 }}
                 >
-                <Paper>{statistics.statistics?.countFiles} fichiers</Paper>
-                <Paper>{statistics.statistics?.countUsers} utilisateurs</Paper>
-                <Paper>{statistics.statistics?.nbFilesToday} fichiers uploadés aujourd'hui</Paper>
+                <Paper>{statistics.countFiles} fichiers</Paper>
+                <Paper>{statistics.countUsers} utilisateurs</Paper>
+                <Paper>{statistics.nbFilesToday} fichiers uploadés aujourd'hui</Paper>
             </Box>
 
-            <PieChartFilesByUser data={statistics.filesByUser} />
-
+            <PieChart width={400} height={400}>
+                <Pie
+                    data={statistics.filesByUser}
+                    cx={200}
+                    cy={200}
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="count"
+                >
+                    {statistics.filesByUser.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                </Pie>
+            </PieChart>
         </div>
     );
 }

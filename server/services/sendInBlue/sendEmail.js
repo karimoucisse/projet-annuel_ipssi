@@ -1,4 +1,5 @@
 const SibApiV3Sdk = require('sib-api-v3-sdk');
+require('dotenv').config();
 
 const sendEmail = async (email, emailContent) => {
     const defaultClient = SibApiV3Sdk.ApiClient.instance;
@@ -6,8 +7,8 @@ const sendEmail = async (email, emailContent) => {
     apiKey.apiKey = process.env.BREVO_API_KEY;
     const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
     const sender = {
-        email: 'ali-66380@hotmail.fr',
-        name: 'Cherif B',
+        email: process.env.ADMIN_EMAIL,
+        name: 'ArchiConnect',
     };
     const receivers = [
         {

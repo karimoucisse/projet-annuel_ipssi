@@ -13,7 +13,6 @@ const invoiceRouter = require('./router/invoice.router');
 const stripeService = require('./router/stripe');
 const Invoice = require('./models/invoice.model');
 const User = require('./models/user.model');
-const Basket = require('./models/basket.model');
 const Subscription = require('./models/subscription.model');
 const sendEmail = require('./services/sendInBlue/sendEmail');
 const confirmPaymentTemplate = require('./services/sendInBlue/templates/confirmPayment.template');

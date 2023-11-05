@@ -3,16 +3,15 @@ const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
-const Invoice = require('../models/invoice.model');
 const Address = require('../models/address.model');
 const Subscription = require('../models/subscription.model');
-const Basket = require('../models/basket.model');
 const File = require('../models/file.model');
 const { conn } = require('../services/gridfs/gfs.service');
 const sendEmail = require('../services/sendInBlue/sendEmail');
 const accountDeletedTemplate = require('../services/sendInBlue/templates/accountDeleted.template');
 const accountDeletedAdminTemplate = require('../services/sendInBlue/templates/accountDeletedAdmin.template');
 const { checkParams, deleteFiles } = require('../services/auth.service');
+require('dotenv').config();
 
 const signup = async (req, res) => {
     // TODO: AJOUTER DE LA SECURITE
@@ -125,19 +124,18 @@ const deleteUser = async (req, res) => {
         }   // Utiliser filesDeletedCount dans les mails à envoyer
 
         await Address.findOneAndDelete({ userId: req.user.userId });
-        await Basket.findOneAndDelete({ userId: req.user.userId });
         await Subscription.deleteMany({ userId: req.user.userId });
         const user = await User.findByIdAndDelete(req.user.userId);
         // TODO: Utiliser user.firstname + user.lastname dans les emails à envoyer
         // TODO: Reactiver l'API email
-        //await sendEmail(
-        //    user.email,
-        //    accountDeletedTemplate
-        //);
-        //await sendEmail(
-        //    adminEmail, // TODO: Creer email admin
-        //    accountDeletedAdminTemplate
-        //);
+        await sendEmail(
+            user.email,
+            accountDeletedTemplate
+        );
+        await sendEmail(
+            process.env.ADMIN_EMAIL, // TODO: Creer email admin
+            accountDeletedAdminTemplate
+        );
 
         return res.status(202).json({ message: 'User deleted !' });
     } catch (error) {
