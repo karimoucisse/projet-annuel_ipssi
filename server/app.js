@@ -33,8 +33,7 @@ app.post(
     async (req, res) => {
         let event = req.body;
 
-        const endpointSecret =
-            'whsec_b0a758ff8ad0797930c7bbf2a13ad008b6a374dd182d9018c9dea64246c831af';
+        const endpointSecret = process.env.STRIPE_WEBHOOK;
         if (endpointSecret) {
             const sig = req.headers['stripe-signature'];
             try {
@@ -92,10 +91,10 @@ app.post(
                             ? 'Adding storage'
                             : 'Subscription to ArchiConnect',
                     });
-                    // await sendEmail(
-                    //    user.email,
-                    //    confirmPaymentTemplate
-                    // );
+                    await sendEmail(
+                        user.email,
+                        confirmPaymentTemplate
+                    );
                     // await sendSMS('33624864608');
                 } else {
                     console.error('il y a un problème'); // TODO: Renvoyer message d'erreur
