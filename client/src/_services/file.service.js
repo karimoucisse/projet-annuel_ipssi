@@ -4,26 +4,29 @@ let getAllFiles = () => {
     return Axios.get('/file/files');
 }
 
-let uploadFile = (file) => {
+let uploadFile = (file, onUploadProgress) => {
     const formData = new FormData();
     formData.append('file', file);
-    return Axios.post('/file/upload', formData);
-}
+
+    return Axios.post('/file/upload', formData, {
+        onUploadProgress,
+    });
+};
 
 let displayFile = (fileId) => {
-    return Axios.get('/file/stream/'+fileId);
+    return Axios.get('/file/stream/' + fileId);
 }
 
 let getFileById = (fileId) => {
-    return Axios.get('/file/files/'+fileId);
+    return Axios.get('/file/files/' + fileId);
 }
 
 let deleteFile = (fileId) => {
-    return Axios.delete('/file/'+fileId);
+    return Axios.delete('/file/' + fileId);
 }
 
 let downloadFile = (fileId) => {
-    return Axios.get('/file/download/'+fileId);
+    return Axios.get('/file/download/' + fileId);
 }
 
 export const fileService = {

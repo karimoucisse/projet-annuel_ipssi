@@ -27,7 +27,7 @@ const signup = async (req, res) => {
         postalCode,
         state,
         city,
-        country
+        country,
     } = req.body;
 
     if (req.foundUser) {
@@ -87,6 +87,10 @@ const signup = async (req, res) => {
 const getStorage = async (req, res) => {
     try {
         const storage = await Subscription.findOne({ userId: req.user.userId });
+        return res.status(200).json({ storage, sum: storage.storage });
+        const storage = await Subscription.findOne({ userId: req.user.userId });
+        // const sumStorage = storage.reduce((acc, curr) => acc + curr.storage, 0);
+        console.log('storage ===> ', storage);
         return res.status(200).json({ storage, sum: storage.storage });
     } catch (error) {
         return res.status(500).json({ error: 'Internal Server Error' });
@@ -179,7 +183,7 @@ const updateUserAndAddress = async (req, res) => {
     try {
         const { userId } = req.user;
 
-        // Vérifiez si l'utilisateur existe
+        // Vérifier si l'utilisateur existe
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -228,7 +232,7 @@ const updateUserAndAddress = async (req, res) => {
         }
 
         await userAddress.save();
-        user.address = userAddress._id; // Associez l'adresse à l'utilisateur
+        user.address = userAddress._id; // Associer l'adresse à l'utilisateur
 
         await user.save();
 

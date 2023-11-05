@@ -34,12 +34,12 @@ const CheckoutSuccess = () => {
             <Box sx={styles.content}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Typography variant="h4" component="h1" gutterBottom sx={styles.text}>
-                        Inscription réussie
+                        Paiment effectué avec succès
                     </Typography>
                     <CheckCircleIcon sx={styles.checkIcon} />
                 </Box>
                 <Typography variant="body1" paragraph>
-                    Félicitations ! Votre inscription a été effectuée avec succès.
+                    Félicitations !
                 </Typography>
                 <Button
                     component={Link}
