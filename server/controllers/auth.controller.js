@@ -88,10 +88,6 @@ const getStorage = async (req, res) => {
     try {
         const storage = await Subscription.findOne({ userId: req.user.userId });
         return res.status(200).json({ storage, sum: storage.storage });
-        const storage = await Subscription.findOne({ userId: req.user.userId });
-        // const sumStorage = storage.reduce((acc, curr) => acc + curr.storage, 0);
-        console.log('storage ===> ', storage);
-        return res.status(200).json({ storage, sum: storage.storage });
     } catch (error) {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
