@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Avatar,
   Box,
@@ -8,32 +8,50 @@ import {
   Stack,
   Typography,
   useTheme,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Button,  // Importez le bouton
 } from "@mui/material";
 import ApartmentIcon from "@mui/icons-material/Apartment";
-import PersonIcon from "@mui/icons-material/Person";
+// import PersonIcon from "@mui/icons-material/Person";
+import MenuIcon from "@mui/icons-material/Menu";
 import { accountService } from "../_services/account.service";
-import { Link as RouterLink } from "react-router-dom"; // Importez Link de react-router-dom
+import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Logout from "@mui/icons-material/Logout";
+
 
 const Header = () => {
+  const navigate = useNavigate();
   const currentLocation = window.location.pathname;
   const theme = useTheme();
-  const linkList = [
-    {
-      text: "Accueil",
-      link: "",
-    },
-    {
-      text: "Stockage",
-      link: "storage",
-    },
-    {
-      text: "Support",
-      link: "support",
-    },
-  ];
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  if (!accountService.isLogged()) return null; // Renvoyez null si l'utilisateur n'est pas connecté
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+  useEffect(() => {
+    console.log("menuOpen a changé :", menuOpen);
+    // Vous pouvez ajouter ici tout code qui doit s'exécuter lorsque menuOpen change
+  }, [menuOpen]);
+  const handleLogout = async () => {
+    setMenuOpen(!menuOpen);
+    accountService.logout();
+    navigate("/auth/login");
+  };
 
+  if (!accountService.isLogged()) return null;
+
+  const btnLogoutStyle = {
+    color: "#FADF8B",
+    backgroundColor: "#1C2930",
+    width: "100%",
+    display: "flex",
+    marginTop: "100%",
+  };
   return (
     <Box
       sx={{
@@ -43,6 +61,7 @@ const Header = () => {
         color: theme.palette.primary.main,
         display: "flex",
         alignItems: "center",
+        justifyContent: "space-between",
       }}
     >
       <Box flex={1}>
@@ -53,70 +72,60 @@ const Header = () => {
               display: "flex",
               alignItems: "center",
               gap: 1,
-              fontFamily: "cursive",
+              // fontFamily: "MontSerrat",
               fontWeight: "bold",
+              textDecoration: "none",
+              // textTransform: "uppercase",
             }}
           >
             <ApartmentIcon /> ArchiConnect
           </Typography>
+
         </Link>
       </Box>
-      <Stack
-        direction="row"
-        spacing={4}
-        sx={{
-          flex: 2,
-          color: theme.palette.primary.main,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {linkList.map((item, i) => (
-          <Link
-            component={RouterLink} // Utilisez le composant RouterLink pour créer un lien
-            to={`/${item.link}`} // Utilisez "to" au lieu de "href"
-            color="inherit"
-            key={i}
-            sx={{
-              backgroundColor:
-                (currentLocation.includes(item.link) && item.link.length > 1) ||
-                (currentLocation === "/" && item.text === "Accueil")
-                  ? theme.palette.primary.main
-                  : "#F3F3F3",
-              color:
-                (currentLocation.includes(item.link) && item.link.length > 1) ||
-                (currentLocation === "/" && item.text === "Accueil")
-                  ? "white"
-                  : theme.palette.primary.main,
-              padding: "8px 16px",
-              borderRadius: "4px",
-              textDecoration: "none",
-              "&:hover": {
-                backgroundColor: "white",
-                color: theme.palette.primary.main,
-              },
-            }}
-          >
-            <Typography variant="body1">{item.text}</Typography>
-          </Link>
-        ))}
-      </Stack>
       <Box flex={1} sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Link to="/profile" component={RouterLink}>
-          {" "}
-          {/* Ajoutez un lien vers /profile */}
-          <Chip
-            label="Compte"
-            avatar={
-              <Avatar>
-                <PersonIcon />
-              </Avatar>
-            }
-            sx={{ color: theme.palette.primary.main, cursor: "pointer" }}
-            size="medium"
-          />
-        </Link>
+        <IconButton
+          onClick={() => toggleMenu()}
+          sx={{ marginRight: "10px" }}
+          color="inherit"
+        >
+          <MenuIcon />
+        </IconButton>
       </Box>
+      <Drawer anchor="right" open={menuOpen} onClose={() => toggleMenu()}>
+        <List>
+          <ListItem
+            button
+            component={RouterLink}
+            to={`/`}
+            sx={currentLocation === "/" ? { backgroundColor: theme.palette.primary.main, color: "white" } : {}}
+            onClick={() => toggleMenu()}
+          >
+            <ListItemText primary="Accueil" />
+          </ListItem>
+          <ListItem
+            button
+            component={RouterLink}
+            to={`/profile`}
+            sx={currentLocation === "/profile" ? { backgroundColor: theme.palette.primary.main, color: "white" } : {}}
+            onClick={() => toggleMenu()}
+          >
+            <ListItemText primary="Mon compte" />
+          </ListItem>
+          <ListItem
+            button
+            component={RouterLink}
+            to={`/profile/invoices`}
+            sx={currentLocation === "/profile/invoices" ? { backgroundColor: theme.palette.primary.main, color: "white" } : {}}
+            onClick={() => toggleMenu()}
+          >
+            <ListItemText primary="Mes factures" />
+          </ListItem>
+          <ListItem>
+            <Button onClick={handleLogout} variant="contained" style={btnLogoutStyle} startIcon={<Logout />}>Déconnexion</Button>
+          </ListItem>
+        </List>
+      </Drawer>
     </Box>
   );
 };

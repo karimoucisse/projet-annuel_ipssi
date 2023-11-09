@@ -16,7 +16,8 @@ const ListInvoices = () => {
 
     useEffect(() => {
         if (flag.current === false) {
-            invoiceService.getInvoices()
+            invoiceService
+                .getInvoices()
                 .then((res) => {
                     console.log(res.data);
                     setInvoices(res.data);
@@ -28,7 +29,8 @@ const ListInvoices = () => {
     }, []);
 
     const downloadInvoice = async (invoiceId) => {
-        await invoiceService.getInvoice(invoiceId)
+        await invoiceService
+            .getInvoice(invoiceId)
             .then((res) => {
                 console.log(res);
                 const url = window.URL.createObjectURL(new Blob([res.data]));
@@ -44,7 +46,12 @@ const ListInvoices = () => {
     };
 
     return (
-        <div>
+        <div
+            style={{
+                height: "calc(100vh - 70px)",
+                overflowY: "auto",
+            }}
+        >
             <Typography variant="h4" gutterBottom>
                 Liste des factures
             </Typography>

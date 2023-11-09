@@ -65,6 +65,7 @@ const FileUpload = ({ onUpload, onUploadProgress }) => {
         width: "80%",
         marginBlock: "20px",
         boxShadow: "none",
+        marginInline: "auto"
       }}
       onDragEnter={handleDragEnter}
       onDragOver={handleDragEnter}

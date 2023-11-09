@@ -97,9 +97,8 @@ const Login = () => {
                     />
                   </Stack>
                   <Typography mt={4} variant="body2">
-                    Mot de passe oublié ?
-                    <Link href="/forgot-password" color="inherit" ml={1}>
-                      Réinitialiser
+                    <Link href="/auth/signup" color="inherit" ml={1}>
+                      Créer mon compte
                     </Link>
                   </Typography>
                   <Button

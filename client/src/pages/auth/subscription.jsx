@@ -17,6 +17,7 @@ import {
   Divider,
 } from "@mui/material";
 import ArchiConnectContainer from "../../components/auth/ArchiConnectContainer";
+import { Link } from "react-router-dom";
 
 const Subscription = () => {
   const flag = useRef(false);
@@ -192,7 +193,11 @@ const Subscription = () => {
           fullWidth
         />
       </Stack>
-
+      <Typography mt={4} variant="body2">
+        <Link to="/auth/login" color="inherit" ml={1}>
+          Se connecter
+        </Link>
+      </Typography>
       <Button
         type="submit"
         variant="contained"
@@ -291,7 +296,7 @@ const Subscription = () => {
           control={<Radio />}
           label="Abonnement à 20€"
         />
-        <FormControlLabel
+        {/* <FormControlLabel
           value="2"
           control={<Radio />}
           label="Abonnement à 40€"
@@ -300,7 +305,7 @@ const Subscription = () => {
           value="3"
           control={<Radio />}
           label="Abonnement à 60€"
-        />
+        /> */}
       </RadioGroup>
 
       <Button

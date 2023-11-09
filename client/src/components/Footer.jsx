@@ -65,9 +65,6 @@ const Footer = () => {
                     <Link href="/" color="inherit" variant="body1">
                       Accueil
                     </Link>
-                    <Link href="/storage" color="inherit" variant="body1">
-                      Stockage
-                    </Link>
                     <Link href="/support" color="inherit" variant="body1">
                       Support
                     </Link>
@@ -75,9 +72,6 @@ const Footer = () => {
                   <div style={styles.column}>
                     <Link href="/profile" color="inherit" variant="body1">
                       Compte
-                    </Link>
-                    <Link href="/favoris" color="inherit" variant="body1">
-                      Favoris
                     </Link>
                   </div>
                 </div>

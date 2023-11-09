@@ -47,7 +47,7 @@ const CheckoutSuccess = () => {
                     variant="contained"
                     color="primary"
                 >
-                    Se connecter
+                    retour
                 </Button>
             </Box>
         </Container>
